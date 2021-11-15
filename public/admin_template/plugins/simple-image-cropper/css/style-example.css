@@ -1,0 +1,29 @@
+.clear {
+    font-size: 0px;
+    line-height: 0px;
+    overflow: hidden;
+    width: 0px;
+    height: 0px;
+    clear: both;
+}
+
+.simple-cropper-images {
+    width: 100%;
+    margin: 0 auto 20px;
+}
+
+.cropme {
+    margin: 0 auto;
+    /* float: left; */
+    background-color: rgba(0, 0, 0, 0.473);
+    margin-bottom: 5px;
+    /* margin-right: 5px; */
+    background-image: url('../images/UploadLight.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+.cropme:hover {
+    background-image: url('../images/UploadDark.png');
+}
