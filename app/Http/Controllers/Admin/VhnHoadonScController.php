@@ -13,7 +13,8 @@ class VhnHoadonScController extends Controller
     }
     public function create() {
         $products = DB::table('vhn_products')->get();
-        return view('admincp.hoadonscs.create',compact('products'));
+        $congnos = DB::table('vhn_suppliers')->get();
+        return view('admincp.hoadonscs.create',compact('products','congnos'));
     }
     public function store(Request $request) {
         try {
@@ -78,7 +79,8 @@ class VhnHoadonScController extends Controller
                         'stt' => $key,
                         'name' => $item['name'],
                         'price' => $item['price'] ? str_replace([' ',',','_'], '', $item['price']) : 0,
-                        'fee' => $item['fee'] ? str_replace([' ',',','_'], '', $item['fee']) : 0
+                        // 'fee' => $item['fee'] ? str_replace([' ',',','_'], '', $item['fee']) : 0,
+                        'id_congno' => $item['id_congno']
                     ]);
                 }
             }
@@ -90,11 +92,12 @@ class VhnHoadonScController extends Controller
     public function edit($id) {
         try {
             $products = DB::table('vhn_products')->get();
+            $congnos = DB::table('vhn_suppliers')->get();
             $hoadonsc = DB::table('vhn_hoadon_scs')->where('id',$id)->first();
             $hdsanphams = DB::table('vhn_hd_sanphams')->where([['id_hd',$id],['id_type','sc']])->get();
             $hdkiemtras = DB::table('vhn_hd_kiemtras')->where('id_hd',$id)->get();
             $hdsuachuas = DB::table('vhn_hd_suachuas')->where('id_hd',$id)->get();
-            return view('admincp.hoadonscs.edit',compact('products','hoadonsc','hdsanphams','hdkiemtras','hdsuachuas'));
+            return view('admincp.hoadonscs.edit',compact('products','congnos','hoadonsc','hdsanphams','hdkiemtras','hdsuachuas'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error','Error!');
         }
@@ -154,7 +157,8 @@ class VhnHoadonScController extends Controller
                         'stt' => $key,
                         'name' => $item['name'],
                         'price' => $item['price'] ? str_replace([' ',',','_'], '', $item['price']) : 0,
-                        'fee' => $item['fee'] ? str_replace([' ',',','_'], '', $item['fee']) : 0
+                        // 'fee' => $item['fee'] ? str_replace([' ',',','_'], '', $item['fee']) : 0,
+                        'id_congno' => $item['id_congno']
                     ]);
                 }
             }
@@ -206,10 +210,15 @@ class VhnHoadonScController extends Controller
             return redirect()->back()->with('error','Error!');
         }
     }
-
     public function status(Request $request){
         try {
-            DB::table('vhn_hoadon_scs')->where('id', $request->id)->update(['status' => $request->status]);
+            if ($request->status == 4) {
+                $percentprice = DB::table('vhn_hd_suachuas')->where('vhn_hd_suachuas.id_hd',$request->id)->sum('vhn_hd_suachuas.price');
+                $loinhuan = round((20 / 100) * $percentprice, -3);
+            }else{
+                $loinhuan = 0;
+            }
+            DB::table('vhn_hoadon_scs')->where('id', $request->id)->update(['status' => $request->status,'loinhuan' => $loinhuan]);
             return response()->json('success');
         } catch (\Throwable $th) {
             return response()->json('error');

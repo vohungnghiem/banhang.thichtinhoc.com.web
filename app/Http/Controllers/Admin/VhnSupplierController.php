@@ -9,7 +9,20 @@ use App\Models\Supplier;
 class VhnSupplierController extends Controller
 {
     public function index() {
-        $suppliers = Supplier::all();
+        $suppliers = DB::table('vhn_suppliers')
+            ->leftJoin('vhn_hd_suachuas','vhn_hd_suachuas.id_congno','=','vhn_suppliers.id')
+            ->leftJoin('vhn_hoadon_scs','vhn_hoadon_scs.id','=','vhn_hd_suachuas.id_hd')
+            ->where('vhn_suppliers.id','>','0')
+            ->select(
+                'vhn_suppliers.*',
+                // DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_kiemtras.name) as arr_name"),
+                DB::raw("SUM( vhn_hd_suachuas.price) AS tiencongno"),
+                // DB::raw("SUM(  vhn_hd_suachuas.price + vhn_hd_suachuas.fee) AS totalsc"),
+                // DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_sanphams.total,'-',vhn_hd_sanphams.id_type) as totalsp"),
+            )
+            ->groupBy('vhn_suppliers.id')
+            ->get();
+        // dd($suppliers);
         return view('admincp.suppliers.index',compact('suppliers'));
     }
     public function create() {

@@ -30,7 +30,11 @@ class HomeController extends Controller
     }
 
     public function tongLoiNhuan($year) {
-        $loinhuan_tunhap = DB::table('vhn_hoadon_scs')->whereYear('thoigian',$year)->sum('loinhuan'); // lợi nhuận sửa chửa tự nhập
+        $loinhuan_tunhap = DB::table('vhn_hoadon_scs')->whereYear('thoigian',$year)->where([['vhn_hoadon_scs.status','>=',4]])->sum('loinhuan'); // lợi nhuận sửa chửa tự nhập
+        // $loinhuan_percent = DB::table('vhn_hd_suachuas')
+        // ->leftJoin('vhn_hoadon_scs','vhn_hoadon_scs.id','=','vhn_hd_suachuas.id_hd')
+        // ->whereYear('vhn_hoadon_scs.thoigian',$year)
+        // ->sum('vhn_hd_suachuas.price');
         $loinhuan_bansp = DB::table('vhn_hoadon_pros')
             ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_pros.id')
             ->leftJoin('vhn_products','vhn_products.id','=','vhn_hd_sanphams.id_sp')
@@ -62,12 +66,14 @@ class HomeController extends Controller
                 ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_scs.id')
                 ->whereYear('thoigian',$year)
                 ->whereMonth('thoigian',$i)
+                ->where([['vhn_hoadon_scs.status','>=',4]])
                 ->where('vhn_hd_sanphams.id_type','sc')
                 ->sum(DB::raw('vhn_hd_sanphams.total'));
             $phisuachua = DB::table('vhn_hoadon_scs')
                 ->leftJoin('vhn_hd_suachuas','vhn_hd_suachuas.id_hd','=','vhn_hoadon_scs.id')
                 ->whereYear('thoigian',$year)
                 ->whereMonth('thoigian',$i)
+                ->where([['vhn_hoadon_scs.status','>=',4]])
                 ->sum(DB::raw('vhn_hd_suachuas.price + vhn_hd_suachuas.fee'));
             array_push($hoadonMonth,$ban_pro + $ban_sc + $phisuachua);
         }
@@ -91,12 +97,14 @@ class HomeController extends Controller
                 ->leftJoin('vhn_products','vhn_products.id','=','vhn_hd_sanphams.id_sp')
                 ->whereYear('thoigian',$year)
                 ->whereMonth('thoigian',$i)
+                ->where([['vhn_hoadon_scs.status','>=',4]])
                 ->where('vhn_hd_sanphams.id_type','sc')
                 ->sum(DB::raw('vhn_hd_sanphams.total - (vhn_hd_sanphams.quantity * vhn_products.price_import)'));
             $phisuachua =
             DB::table('vhn_hoadon_scs')
                 ->whereYear('thoigian',$year)
                 ->whereMonth('thoigian',$i)
+                ->where([['vhn_hoadon_scs.status','>=',4]])
                 ->sum(DB::raw('loinhuan'));
             array_push($hoadonMonth,$ban_pro + $ban_sc + $phisuachua);
         }

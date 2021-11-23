@@ -269,7 +269,7 @@ class DatatablesController extends Controller
                 'vhn_hoadon_scs.*','vhn_hd_kiemtras.name',
                 DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_kiemtras.name) as arr_name"),
                 DB::raw("SUM( DISTINCT vhn_hd_kiemtras.fee) AS totalkt"),
-                DB::raw("SUM( DISTINCT vhn_hd_suachuas.price + vhn_hd_suachuas.fee) AS totalsc"),
+                DB::raw("SUM(  vhn_hd_suachuas.price + vhn_hd_suachuas.fee) AS totalsc"),
                 DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_sanphams.total,'-',vhn_hd_sanphams.id_type) as totalsp"),
             )
             ->groupBy('vhn_hoadon_scs.id')
@@ -339,7 +339,7 @@ class DatatablesController extends Controller
             }else{
                 $delete = '
                 <div class="btn btn-xs btn-dark btn-loinhuan" data-toggle="tooltip" title="nhập lợi nhuận"  >
-                <i class="fas fa-pen-alt"></i></div> ';
+                <i class="fas fa-dollar-sign"></i></div> ';
                 $delete .= '<form class="input-group input-group-sm form-loinhuan" style="display:none" action="hoadonscs/loinhuan/'.$item->id.'" method="POST" > '.csrf_field().'
                     <input type="text" name="loinhuan" value="'.$item->loinhuan.'" class="form-control number">
                     <div class="input-group-append">
@@ -349,7 +349,7 @@ class DatatablesController extends Controller
             }
             $ghichu = '
             <div class="btn btn-xs btn-dark btn-ghichu" data-toggle="tooltip" title="nhập ghi chú"  >
-            <i class="far fa-sticky-note"></i></div> ';
+            <i class="far fa-comment-alt"></i></div> ';
             $ghichu .= '<form class="input-group input-group-sm form-ghichu" style="display:none" action="hoadonscs/ghichu/'.$item->id.'" method="POST" > '.csrf_field().'
             <input type="text" name="ghichu" value="'.$item->ghichu.'" class="form-control ">
             <div class="input-group-append">

@@ -124,13 +124,25 @@
                                                             <input type="text" name="dh_suachua[{{$k}}][price]" value="{{old('price')}}" class="form-control number" >
                                                         </div>
                                                     </div>
-                                                    <div class="form-group col-lg-2">
+                                                    <div class="form-group col-lg-3">
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend"> <span class="input-group-text">Công nợ</span> </div>
+                                                            <select name="dh_suachua[{{$k}}][id_congno]" class="form-control select2bs4 ">
+                                                                @foreach ($congnos as $item)
+                                                                    <option value="{{$item->id}}">
+                                                                        {{$item->name}}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    {{-- <div class="form-group col-lg-2">
                                                         <div class="input-group">
                                                             <div class="input-group-prepend"> <span class="input-group-text">Phí DV</span> </div>
                                                             <input type="text" name="dh_suachua[{{$k}}][fee]" value="{{old('fee')}}" class="form-control number" >
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group col-lg-2">
+                                                    </div> --}}
+                                                    <div class="form-group col-lg-1">
                                                         <div class="input-group">
                                                             <div class="input-group-prepend"> <span class="input-group-text">Xóa</span> </div>
                                                             <div class="btn btn-danger btn-remove"><i class="fas fa-trash-alt"></i></div>
@@ -318,14 +330,26 @@
                         '<input type="text" name="dh_suachua['+count_sc+'][price]" class="form-control number" >'+
                     '</div>'+
                 '</div>'+
-                '<div class="form-group col-lg-2">'+
+                '<div class="form-group col-lg-3">'+
                     '<div class="input-group">'+
-                        '<div class="input-group-prepend"> <span class="input-group-text">Phí DV</span> </div>'+
-                        '<input type="text" name="dh_suachua['+count_sc+'][fee]" value="0" class="form-control number" >'+
+                        '<div class="input-group-prepend"> <span class="input-group-text">Công nợ</span> </div>'+
+                        '<select name="dh_suachua['+count_sc+'][id_congno]" class="form-control select2bs4 ">'+
+                            '@foreach ($congnos as $item)'+
+                                '<option value="{{$item->id}}" >'+
+                                    '{{$item->name}}'+
+                                '</option>'+
+                            '@endforeach'+
+                        '</select>'+
                     '</div>'+
                 '</div>'+
+                // '<div class="form-group col-lg-2">'+
+                //     '<div class="input-group">'+
+                //         '<div class="input-group-prepend"> <span class="input-group-text">Phí DV</span> </div>'+
+                //         '<input type="text" name="dh_suachua['+count_sc+'][fee]" value="0" class="form-control number" >'+
+                //     '</div>'+
+                // '</div>'+
 
-                '<div class="form-group col-lg-2">'+
+                '<div class="form-group col-lg-1">'+
                     '<div class="input-group">'+
                         '<div class="input-group-prepend"> <span class="input-group-text">Xóa</span> </div>'+
                         '<div class="btn btn-danger btn-remove"><i class="fas fa-trash-alt"></i></div>'+
@@ -334,17 +358,11 @@
             '</div>';
             $('#suachuas').append(html);
             $('.number').inputmask('999,999,999', { numericInput: true });
+            $(".select2bs4").select2({ });
             ++count_sc
         });
     </script>
     <script>
-        // select2
-        function selectRefresh() {
-            $("#products .sanpham").select2({
-                templateResult: formatState,
-                templateSelection: formatState
-            });
-        }
         selectRefresh();
         function formatState (opt) {
             if (!opt.id) {
