@@ -212,9 +212,10 @@ class VhnHoadonScController extends Controller
     }
     public function status(Request $request){
         try {
+            $setpercent = DB::table('vhn_setups')->where('name','percent')->first();
             if ($request->status == 4) {
                 $percentprice = DB::table('vhn_hd_suachuas')->where('vhn_hd_suachuas.id_hd',$request->id)->sum('vhn_hd_suachuas.price');
-                $loinhuan = round((20 / 100) * $percentprice, -3);
+                $loinhuan = round(($setpercent->value / 100) * $percentprice, -3);
             }else{
                 $loinhuan = 0;
             }

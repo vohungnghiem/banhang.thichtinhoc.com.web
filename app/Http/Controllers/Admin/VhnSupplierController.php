@@ -12,17 +12,15 @@ class VhnSupplierController extends Controller
         $suppliers = DB::table('vhn_suppliers')
             ->leftJoin('vhn_hd_suachuas','vhn_hd_suachuas.id_congno','=','vhn_suppliers.id')
             ->leftJoin('vhn_hoadon_scs','vhn_hoadon_scs.id','=','vhn_hd_suachuas.id_hd')
-            ->where('vhn_suppliers.id','>','0')
+            ->where('vhn_suppliers.id','>',0)
             ->select(
                 'vhn_suppliers.*',
-                // DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_kiemtras.name) as arr_name"),
-                DB::raw("SUM( vhn_hd_suachuas.price) AS tiencongno"),
-                // DB::raw("SUM(  vhn_hd_suachuas.price + vhn_hd_suachuas.fee) AS totalsc"),
-                // DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_sanphams.total,'-',vhn_hd_sanphams.id_type) as totalsp"),
+                DB::raw("SUM( CASE WHEN (vhn_hoadon_scs.status = 4) AND (vhn_hd_suachuas.ngay_congno IS NULL) THEN vhn_hd_suachuas.price ELSE 0 END) AS tiencongno"),
+                DB::raw('MAX(vhn_hd_suachuas.ngay_congno) as ngay_congno'),
             )
             ->groupBy('vhn_suppliers.id')
+            ->orderBy('vhn_suppliers.id','asc')
             ->get();
-        // dd($suppliers);
         return view('admincp.suppliers.index',compact('suppliers'));
     }
     public function create() {
@@ -48,6 +46,16 @@ class VhnSupplierController extends Controller
             return view('admincp.suppliers.edit',compact('supplier'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error','Error!');
+        }
+    }
+    public function congno(Request $request) {
+        // return $request->id;
+        try {
+            $congno = DB::table('vhn_hd_suachuas')->leftJoin('vhn_hoadon_scs','vhn_hoadon_scs.id','=','vhn_hd_suachuas.id_hd')
+            ->where([['id_congno',$request->id],['ngay_congno',null],['vhn_hoadon_scs.status',4]])->update(['ngay_congno' => date('Y-m-d')]);;
+            return response()->json('success');
+        } catch (\Throwable $th) {
+            return response()->json('error');
         }
     }
     public function update(Request $request, $id)

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 23, 2021 lúc 10:39 AM
+-- Thời gian đã tạo: Th10 24, 2021 lúc 09:55 AM
 -- Phiên bản máy phục vụ: 10.4.21-MariaDB
 -- Phiên bản PHP: 7.4.25
 
@@ -342,18 +342,19 @@ CREATE TABLE `vhn_hd_suachuas` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `price` int(11) DEFAULT 0,
   `fee` int(11) DEFAULT 0,
-  `id_congno` int(11) UNSIGNED DEFAULT 0
+  `id_congno` int(11) UNSIGNED DEFAULT 0,
+  `ngay_congno` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `vhn_hd_suachuas`
 --
 
-INSERT INTO `vhn_hd_suachuas` (`id_hd`, `stt`, `name`, `price`, `fee`, `id_congno`) VALUES
-(64, 0, 'sửa chửa 1', 1000000, 0, 1),
-(64, 1, 'sửa chửa 2', 1000000, 0, 0),
-(65, 0, 'thiet vi 2 1', 1000000, 0, 1),
-(65, 1, 'thiet bi 2 2', 1000000, 0, 0);
+INSERT INTO `vhn_hd_suachuas` (`id_hd`, `stt`, `name`, `price`, `fee`, `id_congno`, `ngay_congno`) VALUES
+(64, 0, 'sửa chửa 1', 1000000, 0, 1, NULL),
+(64, 1, 'sửa chửa 2', 1000000, 0, 0, NULL),
+(65, 0, 'thiet vi 2 1', 1000000, 0, 1, NULL),
+(65, 1, 'thiet bi 2 3', 1000000, 0, 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -428,8 +429,8 @@ CREATE TABLE `vhn_hoadon_scs` (
 --
 
 INSERT INTO `vhn_hoadon_scs` (`id`, `mahoadon`, `thoigian`, `ngaytra`, `tenkh`, `diachi`, `sdt`, `email`, `dulieucangiu`, `loaidichvu`, `loinhuan`, `ghichu`, `sort`, `status`, `created_at`, `updated_at`) VALUES
-(64, 2, '2021-11-23 00:00:00', '2021-12-03 00:00:00', 'nghiem 1', NULL, '01235456', NULL, NULL, 1, 400000, NULL, NULL, 4, '2021-11-22 23:33:34', '2021-11-23 00:15:08'),
-(65, 3, '2021-11-23 00:00:00', '2021-12-03 00:00:00', 'nghiem 2', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 1, '2021-11-23 01:47:26', '2021-11-23 01:47:26');
+(64, 2, '2021-11-23 00:00:00', '2021-12-03 00:00:00', 'nghiem 1', NULL, '01235456', NULL, NULL, 1, 400000, NULL, NULL, 4, '2021-11-22 23:33:34', '2021-11-24 01:49:46'),
+(65, 3, '2021-11-23 00:00:00', '2021-12-03 00:00:00', 'nghiem 2', NULL, NULL, NULL, NULL, 1, 600000, NULL, NULL, 4, '2021-11-23 01:47:26', '2021-11-24 01:49:20');
 
 -- --------------------------------------------------------
 
@@ -644,6 +645,26 @@ INSERT INTO `vhn_products` (`id`, `name`, `image`, `quantity`, `price_sale`, `pr
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `vhn_setups`
+--
+
+CREATE TABLE `vhn_setups` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `value` int(11) DEFAULT 0,
+  `text` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `vhn_setups`
+--
+
+INSERT INTO `vhn_setups` (`id`, `name`, `value`, `text`) VALUES
+(1, 'percent', 30, NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `vhn_suppliers`
 --
 
@@ -794,6 +815,12 @@ ALTER TABLE `vhn_products`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Chỉ mục cho bảng `vhn_setups`
+--
+ALTER TABLE `vhn_setups`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Chỉ mục cho bảng `vhn_suppliers`
 --
 ALTER TABLE `vhn_suppliers`
@@ -862,6 +889,12 @@ ALTER TABLE `vhn_phieus`
 --
 ALTER TABLE `vhn_products`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=150;
+
+--
+-- AUTO_INCREMENT cho bảng `vhn_setups`
+--
+ALTER TABLE `vhn_setups`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT cho bảng `vhn_suppliers`

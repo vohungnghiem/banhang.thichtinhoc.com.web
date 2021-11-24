@@ -30,6 +30,7 @@
                                             <th>Địa chỉ</th>
                                             <th>Số điện thoại</th>
                                             <th>Sửa chửa + bán hàng</th>
+                                            <th>Công nợ</th>
                                             <th>Trạng thái</th>
                                             <th>Tác vụ</th>
                                         </tr>
@@ -98,6 +99,9 @@
                     },
                     {
                         data: 'tongtien', className: 'text-center', width: '150px'
+                    },
+                    {
+                        data: 'congno', className: 'text-center'
                     },
                     {
                         data: 'status', className: 'text-left', width: '10px'

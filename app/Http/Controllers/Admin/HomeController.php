@@ -10,6 +10,7 @@ class HomeController extends Controller
     public function index() {
         $year = isset($_GET['datey']) ? $_GET['datey'] : date('Y');
         $month = isset($_GET['datem']) ? $_GET['datem'] : date('m');
+        $setpercent = DB::table('vhn_setups')->where('name','percent')->first();
 
         $products = DB::table('vhn_products')->count();
         $quantity = DB::table('vhn_products')->sum('quantity');
@@ -26,15 +27,10 @@ class HomeController extends Controller
         $loinhuanmonth = $this->chartLoinhuanMonth($year);
         $tkday = $this->chartDay($year,$month);
         $loinhuanday = $this->chartLoinhuanDay($year,$month);
-        return view('admincp.home.dashboard',compact('products','quantity','importPrice','tongloinhuan','vonchitieu','phieuthu','tkmonth','loinhuanmonth','tkday','loinhuanday','year','month'));
+        return view('admincp.home.dashboard',compact('products','quantity','importPrice','tongloinhuan','vonchitieu','phieuthu','tkmonth','loinhuanmonth','tkday','loinhuanday','year','month','setpercent'));
     }
-
     public function tongLoiNhuan($year) {
         $loinhuan_tunhap = DB::table('vhn_hoadon_scs')->whereYear('thoigian',$year)->where([['vhn_hoadon_scs.status','>=',4]])->sum('loinhuan'); // lợi nhuận sửa chửa tự nhập
-        // $loinhuan_percent = DB::table('vhn_hd_suachuas')
-        // ->leftJoin('vhn_hoadon_scs','vhn_hoadon_scs.id','=','vhn_hd_suachuas.id_hd')
-        // ->whereYear('vhn_hoadon_scs.thoigian',$year)
-        // ->sum('vhn_hd_suachuas.price');
         $loinhuan_bansp = DB::table('vhn_hoadon_pros')
             ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_pros.id')
             ->leftJoin('vhn_products','vhn_products.id','=','vhn_hd_sanphams.id_sp')
@@ -157,6 +153,16 @@ class HomeController extends Controller
         }
         $tkday = '['.implode(",",$hoadonDay).']';
         return $tkday;
+    }
+    public function setup(Request $request,$name) {
+        DB::table('vhn_setups')->updateOrInsert(
+            ['name' => $name],
+            [
+                'value' => $request->value,
+                'text' => $request->text
+            ]
+        );
+        return redirect()->back()->with('success');
     }
 
 }

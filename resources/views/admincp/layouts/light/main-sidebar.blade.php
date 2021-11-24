@@ -70,31 +70,31 @@
                 @endif
                 <li class="nav-item">
                     <a href="suppliers" class="nav-link">
-                        <i class="nav-icon fas fa-user-shield"></i>
+                        <i class="fas fa-hands-helping"></i>
                         <p>Nhà cung cấp</p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="products" class="nav-link">
-                        <i class="nav-icon fas fa-user-shield"></i>
+                        <i class="fas fa-hdd"></i>
                         <p>Sản phẩm</p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="phieus" class="nav-link">
-                        <i class="nav-icon fas fa-user-shield"></i>
+                        <i class="fas fa-file-invoice-dollar"></i>
                         <p>Phiếu chi thu</p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="hoadonpros" class="nav-link">
-                        <i class="nav-icon fas fa-user-shield"></i>
+                        <i class="fas fa-receipt"></i>
                         <p>Hóa đơn sản phẩm</p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="hoadonscs" class="nav-link">
-                        <i class="nav-icon fas fa-user-shield"></i>
+                        <i class="fas fa-receipt"></i>
                         <p>Hóa đơn Sửa chửa</p>
                     </a>
                 </li>

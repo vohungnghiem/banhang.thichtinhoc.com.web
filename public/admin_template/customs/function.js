@@ -62,6 +62,33 @@ function morestatus(params) {
         });
     });
 }
+// change status
+function congno(params) {
+    $("#myTable").on('click', '.btn-congno', function(e) {
+        Swal.fire({
+            // position: 'top-end',
+            title: lang.alert.question_ays,
+            text: lang.alert.revert,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: lang.alert.change,
+            cancelButtonText: lang.alert.cancel
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var id = $(this).attr('data-id');
+                $.post(params + "/congno", {
+                        id: id,
+                    },
+                    function(result) {
+                        swal_condition(result);
+                    }
+                );
+            }
+        });
+    });
+}
 // change sort
 function sort(params) {
     $("#myTable").on('change', '.btn-sort', function(e) {

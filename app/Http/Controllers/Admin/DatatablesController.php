@@ -265,15 +265,21 @@ class DatatablesController extends Controller
             ->leftJoin('vhn_hd_kiemtras','vhn_hd_kiemtras.id_hd','=','vhn_hoadon_scs.id')
             ->leftJoin('vhn_hd_suachuas','vhn_hd_suachuas.id_hd','=','vhn_hoadon_scs.id')
             ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_scs.id')
+            ->leftJoin('vhn_suppliers','vhn_hd_suachuas.id_congno','=','vhn_suppliers.id')
             ->select(
                 'vhn_hoadon_scs.*','vhn_hd_kiemtras.name',
                 DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_kiemtras.name) as arr_name"),
                 DB::raw("SUM( DISTINCT vhn_hd_kiemtras.fee) AS totalkt"),
                 DB::raw("SUM(  vhn_hd_suachuas.price + vhn_hd_suachuas.fee) AS totalsc"),
                 DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_sanphams.total,'-',vhn_hd_sanphams.id_type) as totalsp"),
+                // DB::raw("GROUP_CONCAT(DISTINCT vhn_suppliers.name,'-',vhn_hd_suachuas.ngay_congno) as congno"),
+                DB::raw("GROUP_CONCAT(DISTINCT CASE WHEN (vhn_hd_suachuas.id_congno > 0) AND (vhn_hd_suachuas.ngay_congno IS NULL) THEN vhn_suppliers.name ELSE NULL END , '*' ) as congno"),
+
+                // DB::raw("SUM( CASE WHEN (vhn_hoadon_scs.status = 4) AND (vhn_hd_suachuas.ngay_congno IS NULL) THEN vhn_hd_suachuas.price ELSE 0 END) AS tiencongno"),
             )
             ->groupBy('vhn_hoadon_scs.id')
             ->orderBy('vhn_hoadon_scs.id','desc')->get();
+        // dd($item);
         $datatables = DataTables::of($item);
         $datatables->editColumn('mahoadon', function ($item) {
             return  sprintf("%06d", $item->mahoadon);
@@ -302,7 +308,19 @@ class DatatablesController extends Controller
                 }
             }
             return number_format($item->totalsc) . ' + ' . number_format($totalsp);
+        });
+        $datatables->editColumn('congno', function ($item) {
+            if (isset($item->congno)) {
+                $result = '<div class="badge badge-xs badge-danger" data-toggle="tooltip" title="'.$item->congno.'">
+                    <i class="fas fa-comment-dots"></i> còn nợ
+                </div> ';
+            }else{
+                $result = '<div class="badge badge-xs badge-success" data-toggle="tooltip" title="'.$item->congno.'">
+                    <i class="fas fa-comment-dots"></i> hết nợ
+                </div> ';
+            }
 
+            return $result;
         });
         $datatables->editColumn('status', function ($item) {
             $result = '';
@@ -359,7 +377,7 @@ class DatatablesController extends Controller
             $result .= $edit . $show . $copy . $delete . $ghichu;
             return $result;
         });
-        $datatables->rawColumns(['mahoadon','thoigian','ngaytra','tentb','tenkh','tongtien','status','action']);
+        $datatables->rawColumns(['mahoadon','thoigian','ngaytra','tentb','tenkh','tongtien','congno','status','action']);
         return $datatables->make();
     }
 }

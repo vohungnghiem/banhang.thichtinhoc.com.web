@@ -131,6 +131,24 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="small-box bg-dark">
+                                <div class="inner">
+                                    <h4>Setup phần trăm lợi nhuận </h4>
+                                    <form action="setup/percent" method="post">
+                                        @csrf
+                                        <div class="input-group mb-3">
+                                            <input type="number" name="value" value="{{$setpercent->value}}">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-sm btn-danger"><i class="fas fa-arrow-circle-right"></i></button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </div>

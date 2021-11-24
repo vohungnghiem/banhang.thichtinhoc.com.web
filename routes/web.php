@@ -44,6 +44,7 @@ Route::get('lang/{lang}', ['as' => 'lang.switch', 'uses' => 'App\Http\Controller
 
 Route::group(['middleware' => 'auth','namespace' => 'App\Http\Controllers\Admin'], function() {
     Route::get('/','HomeController@index');
+    Route::post('setup/{name}','HomeController@setup');
     Route::group(['prefix' => 'account'],function(){
         Route::get('/','AccountController@index');//->middleware(['permission:list-super']);
         Route::get('create','AccountController@create');
@@ -64,6 +65,7 @@ Route::group(['middleware' => 'auth','namespace' => 'App\Http\Controllers\Admin'
         Route::post('status','VhnSupplierController@status');
         Route::post('remove_img','VhnSupplierController@remove_img');
         Route::post('destroy', 'VhnSupplierController@destroy');
+        Route::post('congno', 'VhnSupplierController@congno');
     });
 
     Route::group(['prefix' => 'products'],function(){

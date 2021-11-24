@@ -6,3 +6,7 @@
 .img {
     width: 30px !important;
 }
+
+.nav-sidebar .fas {
+    min-width: 25px;
+}
