@@ -21,7 +21,15 @@ class HomeController extends Controller
 
         $phieuthu = DB::table('vhn_phieus')->where('type','=',1)->sum('fee');
         $phieuchi = DB::table('vhn_phieus')->where('type','=',2)->sum('fee');
-        $vonchitieu = $phieuthu - $importPrice - $phieuchi;
+        $hoivon = DB::table('vhn_hoadon_scs')
+            // ->where([['vhn_hoadon_scs.status','>=',4],['vhn_hoadon_scs.id_congno','<=',0],['vhn_hoadon_scs.ngay_congno','<>',NULL]])
+            ->where('vhn_hoadon_scs.status','>=',4)
+            ->where(function($q) {
+                $q->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.ngay_congno','<>',NULL]])
+                  ->orWhere('vhn_hoadon_scs.id_congno','<=', 0);
+            })
+            ->sum('hoivon');
+        $vonchitieu = $phieuthu - $importPrice - $phieuchi + $hoivon;
 
         $tkmonth = $this->chartMonth($year);
         $loinhuanmonth = $this->chartLoinhuanMonth($year);
@@ -30,7 +38,13 @@ class HomeController extends Controller
         return view('admincp.home.dashboard',compact('products','quantity','importPrice','tongloinhuan','vonchitieu','phieuthu','tkmonth','loinhuanmonth','tkday','loinhuanday','year','month','setpercent'));
     }
     public function tongLoiNhuan($year) {
-        $loinhuan_tunhap = DB::table('vhn_hoadon_scs')->whereYear('thoigian',$year)->where([['vhn_hoadon_scs.status','>=',4]])->sum('loinhuan'); // lợi nhuận sửa chửa tự nhập
+        $loinhuan_tunhap = DB::table('vhn_hoadon_scs')->whereYear('thoigian',$year)
+            ->where('vhn_hoadon_scs.status','>=',4)
+            ->where(function($q) {
+                $q->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.ngay_congno','<>',NULL]])
+                ->orWhere('vhn_hoadon_scs.id_congno','<=', 0);
+            })
+            ->sum('loinhuan'); // lợi nhuận phần trăm
         $loinhuan_bansp = DB::table('vhn_hoadon_pros')
             ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_pros.id')
             ->leftJoin('vhn_products','vhn_products.id','=','vhn_hd_sanphams.id_sp')
@@ -42,6 +56,11 @@ class HomeController extends Controller
             ->leftJoin('vhn_products','vhn_products.id','=','vhn_hd_sanphams.id_sp')
             ->whereYear('thoigian',$year)
             ->where('vhn_hd_sanphams.id_type','sc')
+            ->where('vhn_hoadon_scs.status','>=',4)
+            ->where(function($q) {
+                $q->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.ngay_congno','<>',NULL]])
+                ->orWhere('vhn_hoadon_scs.id_congno','<=', 0);
+            })
             ->sum(DB::raw('vhn_hd_sanphams.total - (vhn_hd_sanphams.quantity * vhn_products.price_import)'));
         $loinhuan_sanpham_tunhap = DB::table('vhn_hd_tunhaps')->sum(DB::raw('price')); // lợi nhuận sản phẩm tự nhập (vd: con vít) * ít nhập dữ liệu
 
@@ -62,14 +81,22 @@ class HomeController extends Controller
                 ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_scs.id')
                 ->whereYear('thoigian',$year)
                 ->whereMonth('thoigian',$i)
-                ->where([['vhn_hoadon_scs.status','>=',4]])
+                ->where('vhn_hoadon_scs.status','>=',4)
+                ->where(function($q) {
+                    $q->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.ngay_congno','<>',NULL]])
+                    ->orWhere('vhn_hoadon_scs.id_congno','<=', 0);
+                })
                 ->where('vhn_hd_sanphams.id_type','sc')
                 ->sum(DB::raw('vhn_hd_sanphams.total'));
             $phisuachua = DB::table('vhn_hoadon_scs')
                 ->leftJoin('vhn_hd_suachuas','vhn_hd_suachuas.id_hd','=','vhn_hoadon_scs.id')
                 ->whereYear('thoigian',$year)
                 ->whereMonth('thoigian',$i)
-                ->where([['vhn_hoadon_scs.status','>=',4]])
+                ->where('vhn_hoadon_scs.status','>=',4)
+                ->where(function($q) {
+                    $q->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.ngay_congno','<>',NULL]])
+                    ->orWhere('vhn_hoadon_scs.id_congno','<=', 0);
+                })
                 ->sum(DB::raw('vhn_hd_suachuas.price + vhn_hd_suachuas.fee'));
             array_push($hoadonMonth,$ban_pro + $ban_sc + $phisuachua);
         }
@@ -93,14 +120,22 @@ class HomeController extends Controller
                 ->leftJoin('vhn_products','vhn_products.id','=','vhn_hd_sanphams.id_sp')
                 ->whereYear('thoigian',$year)
                 ->whereMonth('thoigian',$i)
-                ->where([['vhn_hoadon_scs.status','>=',4]])
+                ->where('vhn_hoadon_scs.status','>=',4)
+                ->where(function($q) {
+                    $q->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.ngay_congno','<>',NULL]])
+                    ->orWhere('vhn_hoadon_scs.id_congno','<=', 0);
+                })
                 ->where('vhn_hd_sanphams.id_type','sc')
                 ->sum(DB::raw('vhn_hd_sanphams.total - (vhn_hd_sanphams.quantity * vhn_products.price_import)'));
             $phisuachua =
             DB::table('vhn_hoadon_scs')
                 ->whereYear('thoigian',$year)
                 ->whereMonth('thoigian',$i)
-                ->where([['vhn_hoadon_scs.status','>=',4]])
+                ->where('vhn_hoadon_scs.status','>=',4)
+                ->where(function($q) {
+                    $q->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.ngay_congno','<>',NULL]])
+                    ->orWhere('vhn_hoadon_scs.id_congno','<=', 0);
+                })
                 ->sum(DB::raw('loinhuan'));
             array_push($hoadonMonth,$ban_pro + $ban_sc + $phisuachua);
         }
@@ -120,10 +155,20 @@ class HomeController extends Controller
                 ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_scs.id')
                 ->whereDate('thoigian','=',date('Y-m-d', strtotime(date($getdate."-".$i)) ))
                 ->where('vhn_hd_sanphams.id_type','sc')
+                ->where('vhn_hoadon_scs.status','>=',4)
+                ->where(function($q) {
+                    $q->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.ngay_congno','<>',NULL]])
+                    ->orWhere('vhn_hoadon_scs.id_congno','<=', 0);
+                })
                 ->sum(DB::raw('vhn_hd_sanphams.total'));
             $phisuachua = DB::table('vhn_hoadon_scs')
                 ->leftJoin('vhn_hd_suachuas','vhn_hd_suachuas.id_hd','=','vhn_hoadon_scs.id')
                 ->whereDate('thoigian','=',date('Y-m-d', strtotime(date($getdate."-".$i)) ))
+                ->where('vhn_hoadon_scs.status','>=',4)
+                ->where(function($q) {
+                    $q->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.ngay_congno','<>',NULL]])
+                    ->orWhere('vhn_hoadon_scs.id_congno','<=', 0);
+                })
                 ->sum(DB::raw('vhn_hd_suachuas.price + vhn_hd_suachuas.fee'));
             array_push($hoadonDay,$ban_pro + $ban_sc + $phisuachua);
         }
@@ -145,9 +190,19 @@ class HomeController extends Controller
                 ->leftJoin('vhn_products','vhn_products.id','=','vhn_hd_sanphams.id_sp')
                 ->whereDate('thoigian','=',date('Y-m-d', strtotime(date($getdate."-".$i)) ))
                 ->where('vhn_hd_sanphams.id_type','sc')
+                ->where('vhn_hoadon_scs.status','>=',4)
+                ->where(function($q) {
+                    $q->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.ngay_congno','<>',NULL]])
+                    ->orWhere('vhn_hoadon_scs.id_congno','<=', 0);
+                })
                 ->sum(DB::raw('vhn_hd_sanphams.total - (vhn_hd_sanphams.quantity * vhn_products.price_import)'));
             $phisuachua = DB::table('vhn_hoadon_scs')
                 ->whereDate('thoigian','=',date('Y-m-d', strtotime(date($getdate."-".$i)) ))
+                ->where('vhn_hoadon_scs.status','>=',4)
+                ->where(function($q) {
+                    $q->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.ngay_congno','<>',NULL]])
+                    ->orWhere('vhn_hoadon_scs.id_congno','<=', 0);
+                })
                 ->sum(DB::raw('loinhuan'));
                 array_push($hoadonDay,$ban_pro + $ban_sc + $phisuachua);
         }

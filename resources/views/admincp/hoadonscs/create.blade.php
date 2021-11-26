@@ -57,7 +57,18 @@
                                                 <label> Dữ liệu cần giữ (ghi rõ đường dẫn)</label>
                                                 <textarea name="dulieucangiu" rows="1" class="form-control" placeholder="Dữ liệu cần giữ">{{old('dulieucangiu')}}</textarea>
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group col-lg-12">
+                                                <label> Công nợ </label>
+                                                <div class="form-group clearfix">
+                                                    @foreach (congnos() as $item)
+                                                        <div class="icheck-info d-inline mr-2">
+                                                            <input type="radio" id="c{{$item->id}}" name="id_congno" value="{{$item->id}}">
+                                                            <label for="c{{$item->id}}">{{$item->name}}</label>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-lg-12">
                                                 <label> Loại dịch vụ </label>
                                                 <div class="form-group clearfix">
                                                     @foreach (loaidichvus() as $item)
@@ -124,24 +135,6 @@
                                                             <input type="text" name="dh_suachua[{{$k}}][price]" value="{{old('price')}}" class="form-control number" >
                                                         </div>
                                                     </div>
-                                                    <div class="form-group col-lg-3">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend"> <span class="input-group-text">Công nợ</span> </div>
-                                                            <select name="dh_suachua[{{$k}}][id_congno]" class="form-control select2bs4 ">
-                                                                @foreach ($congnos as $item)
-                                                                    <option value="{{$item->id}}">
-                                                                        {{$item->name}}
-                                                                    </option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    {{-- <div class="form-group col-lg-2">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend"> <span class="input-group-text">Phí DV</span> </div>
-                                                            <input type="text" name="dh_suachua[{{$k}}][fee]" value="{{old('fee')}}" class="form-control number" >
-                                                        </div>
-                                                    </div> --}}
                                                     <div class="form-group col-lg-1">
                                                         <div class="input-group">
                                                             <div class="input-group-prepend"> <span class="input-group-text">Xóa</span> </div>
@@ -157,41 +150,7 @@
                                             </div>
                                         </div>
                                         <div id="products">
-                                            {{-- @for ($i = 0; $i < 1; $i++)
-                                            <div class="row btn-row">
-                                                <div class="form-group col-lg-6">
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend"> <span class="input-group-text">Sản phẩm</span> </div>
-                                                        <select name="hd_sanpham[{{$i}}][id]" class="form-control  sanpham ">
-                                                            @foreach ($products as $item)
-                                                                <option value="{{$item->id}}" data-image="{{storage_link_show('product',$item->created_at).$item->image}}?v={{time()}}">
-                                                                    {{$item->name}} (sp: {{$item->quantity}} ) (giá: {{number_format($item->price_sale)}})
-                                                                </option>
-                                                            @endforeach
-                                                            <option value="0" data-image="logo/logo.png">Không chọn</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group col-lg-2">
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend"> <span class="input-group-text">Số lượng</span> </div>
-                                                        <input type="number" name="hd_sanpham[{{$i}}][quantity]" value="1" class="form-control " >
-                                                    </div>
-                                                </div>
-                                                <div class="form-group col-lg-2">
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend"> <span class="input-group-text">Bảo hành</span> </div>
-                                                        <input type="number" name="hd_sanpham[{{$i}}][warranty]" value="36" class="form-control " >
-                                                    </div>
-                                                </div>
-                                                <div class="form-group col-lg-2 ">
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend"> <span class="input-group-text">Xóa</span> </div>
-                                                        <div class="btn btn-danger btn-remove"><i class="fas fa-trash-alt"></i></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            @endfor --}}
+
                                         </div>
 
                                     </div>
@@ -330,25 +289,6 @@
                         '<input type="text" name="dh_suachua['+count_sc+'][price]" class="form-control number" >'+
                     '</div>'+
                 '</div>'+
-                '<div class="form-group col-lg-3">'+
-                    '<div class="input-group">'+
-                        '<div class="input-group-prepend"> <span class="input-group-text">Công nợ</span> </div>'+
-                        '<select name="dh_suachua['+count_sc+'][id_congno]" class="form-control select2bs4 ">'+
-                            '@foreach ($congnos as $item)'+
-                                '<option value="{{$item->id}}" >'+
-                                    '{{$item->name}}'+
-                                '</option>'+
-                            '@endforeach'+
-                        '</select>'+
-                    '</div>'+
-                '</div>'+
-                // '<div class="form-group col-lg-2">'+
-                //     '<div class="input-group">'+
-                //         '<div class="input-group-prepend"> <span class="input-group-text">Phí DV</span> </div>'+
-                //         '<input type="text" name="dh_suachua['+count_sc+'][fee]" value="0" class="form-control number" >'+
-                //     '</div>'+
-                // '</div>'+
-
                 '<div class="form-group col-lg-1">'+
                     '<div class="input-group">'+
                         '<div class="input-group-prepend"> <span class="input-group-text">Xóa</span> </div>'+

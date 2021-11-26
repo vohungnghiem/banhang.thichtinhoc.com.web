@@ -31,6 +31,7 @@ class VhnHoadonScController extends Controller
                     'email' => $request->email,
                     'dulieucangiu' => $request->dulieucangiu,
                     'loaidichvu' => $request->loaidichvu,
+                    'id_congno' => $request->id_congno,
                     'sort' => $request->sort,
                     'status' => $request->status,
                     'created_at' => date("Y-m-d H:i:s"),
@@ -80,7 +81,7 @@ class VhnHoadonScController extends Controller
                         'name' => $item['name'],
                         'price' => $item['price'] ? str_replace([' ',',','_'], '', $item['price']) : 0,
                         // 'fee' => $item['fee'] ? str_replace([' ',',','_'], '', $item['fee']) : 0,
-                        'id_congno' => $item['id_congno']
+                        // 'id_congno' => $item['id_congno']
                     ]);
                 }
             }
@@ -144,6 +145,7 @@ class VhnHoadonScController extends Controller
                     'email' => $request->email,
                     'dulieucangiu' => $request->dulieucangiu,
                     'loaidichvu' => $request->loaidichvu,
+                    'id_congno' => $request->id_congno,
                     'sort' => $request->sort,
                     'status' => $request->status,
                     'updated_at' => date("Y-m-d H:i:s")
@@ -158,7 +160,7 @@ class VhnHoadonScController extends Controller
                         'name' => $item['name'],
                         'price' => $item['price'] ? str_replace([' ',',','_'], '', $item['price']) : 0,
                         // 'fee' => $item['fee'] ? str_replace([' ',',','_'], '', $item['fee']) : 0,
-                        'id_congno' => $item['id_congno']
+                        // 'id_congno' => $item['id_congno']
                     ]);
                 }
             }
@@ -216,10 +218,12 @@ class VhnHoadonScController extends Controller
             if ($request->status == 4) {
                 $percentprice = DB::table('vhn_hd_suachuas')->where('vhn_hd_suachuas.id_hd',$request->id)->sum('vhn_hd_suachuas.price');
                 $loinhuan = round(($setpercent->value / 100) * $percentprice, -3);
+                $hoivon = round(( ( 100- $setpercent->value) / 100) * $percentprice, -3);
             }else{
                 $loinhuan = 0;
+                $hoivon = 0;
             }
-            DB::table('vhn_hoadon_scs')->where('id', $request->id)->update(['status' => $request->status,'loinhuan' => $loinhuan]);
+            DB::table('vhn_hoadon_scs')->where('id', $request->id)->update(['status' => $request->status,'loinhuan' => $loinhuan,'hoivon' => $hoivon]);
             return response()->json('success');
         } catch (\Throwable $th) {
             return response()->json('error');

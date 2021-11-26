@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 24, 2021 lúc 09:55 AM
+-- Thời gian đã tạo: Th10 26, 2021 lúc 10:57 AM
 -- Phiên bản máy phục vụ: 10.4.21-MariaDB
 -- Phiên bản PHP: 7.4.25
 
@@ -302,7 +302,6 @@ CREATE TABLE `vhn_hd_kiemtras` (
 --
 
 INSERT INTO `vhn_hd_kiemtras` (`id_hd`, `stt`, `name`, `benhtrang`, `dexuat`, `ghichu`, `fee`) VALUES
-(64, 0, NULL, NULL, NULL, NULL, 0),
 (65, 0, NULL, NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
@@ -328,7 +327,8 @@ CREATE TABLE `vhn_hd_sanphams` (
 --
 
 INSERT INTO `vhn_hd_sanphams` (`id_hd`, `id_type`, `stt`, `id_sp`, `name`, `quantity`, `price`, `total`, `warranty`) VALUES
-(36, 'pro', 0, 16, 'THẺ NHỚ MIXIE 64G', 1, 230000, 230000, 6);
+(65, 'sc', 0, 4, 'DDR3 PC 1G SAMSUNG (HÀNG CŨ)', 1, 70000, 70000, 36),
+(65, 'sc', 1, 6, 'DDR3 PC 2G KINGSTON (HÀNG CŨ)', 1, 150000, 150000, 0);
 
 -- --------------------------------------------------------
 
@@ -342,19 +342,17 @@ CREATE TABLE `vhn_hd_suachuas` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `price` int(11) DEFAULT 0,
   `fee` int(11) DEFAULT 0,
-  `id_congno` int(11) UNSIGNED DEFAULT 0,
-  `ngay_congno` date DEFAULT NULL
+  `id_congno11` int(11) UNSIGNED DEFAULT 0,
+  `ngay_congno11` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `vhn_hd_suachuas`
 --
 
-INSERT INTO `vhn_hd_suachuas` (`id_hd`, `stt`, `name`, `price`, `fee`, `id_congno`, `ngay_congno`) VALUES
-(64, 0, 'sửa chửa 1', 1000000, 0, 1, NULL),
-(64, 1, 'sửa chửa 2', 1000000, 0, 0, NULL),
-(65, 0, 'thiet vi 2 1', 1000000, 0, 1, NULL),
-(65, 1, 'thiet bi 2 3', 1000000, 0, 2, NULL);
+INSERT INTO `vhn_hd_suachuas` (`id_hd`, `stt`, `name`, `price`, `fee`, `id_congno11`, `ngay_congno11`) VALUES
+(65, 0, 'laptop 1', 1000000, 0, 0, NULL),
+(65, 1, 'laptop 2', 1000000, 0, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -392,13 +390,6 @@ CREATE TABLE `vhn_hoadon_pros` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Đang đổ dữ liệu cho bảng `vhn_hoadon_pros`
---
-
-INSERT INTO `vhn_hoadon_pros` (`id`, `mahoadon`, `thoigian`, `tenkh`, `diachi`, `sdt`, `loinhuan`, `sort`, `status`, `created_at`, `updated_at`) VALUES
-(36, 1, '2021-11-23 00:00:00', 'nghiem', NULL, '012', NULL, NULL, 1, '2021-11-22 23:44:15', '2021-11-22 23:46:09');
-
 -- --------------------------------------------------------
 
 --
@@ -417,6 +408,9 @@ CREATE TABLE `vhn_hoadon_scs` (
   `dulieucangiu` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `loaidichvu` int(11) DEFAULT 1,
   `loinhuan` bigint(20) DEFAULT NULL,
+  `hoivon` bigint(20) DEFAULT 0,
+  `id_congno` tinyint(4) DEFAULT 0,
+  `ngay_congno` date DEFAULT NULL,
   `ghichu` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `sort` int(11) DEFAULT 1,
   `status` tinyint(4) DEFAULT 0,
@@ -428,9 +422,8 @@ CREATE TABLE `vhn_hoadon_scs` (
 -- Đang đổ dữ liệu cho bảng `vhn_hoadon_scs`
 --
 
-INSERT INTO `vhn_hoadon_scs` (`id`, `mahoadon`, `thoigian`, `ngaytra`, `tenkh`, `diachi`, `sdt`, `email`, `dulieucangiu`, `loaidichvu`, `loinhuan`, `ghichu`, `sort`, `status`, `created_at`, `updated_at`) VALUES
-(64, 2, '2021-11-23 00:00:00', '2021-12-03 00:00:00', 'nghiem 1', NULL, '01235456', NULL, NULL, 1, 400000, NULL, NULL, 4, '2021-11-22 23:33:34', '2021-11-24 01:49:46'),
-(65, 3, '2021-11-23 00:00:00', '2021-12-03 00:00:00', 'nghiem 2', NULL, NULL, NULL, NULL, 1, 600000, NULL, NULL, 4, '2021-11-23 01:47:26', '2021-11-24 01:49:20');
+INSERT INTO `vhn_hoadon_scs` (`id`, `mahoadon`, `thoigian`, `ngaytra`, `tenkh`, `diachi`, `sdt`, `email`, `dulieucangiu`, `loaidichvu`, `loinhuan`, `hoivon`, `id_congno`, `ngay_congno`, `ghichu`, `sort`, `status`, `created_at`, `updated_at`) VALUES
+(65, 3, '2021-11-23 00:00:00', '2021-12-03 00:00:00', 'công ty abc', NULL, NULL, NULL, NULL, 1, 1600000, 400000, 1, '2021-11-26', NULL, NULL, 4, '2021-11-23 01:47:26', '2021-11-26 02:10:05');
 
 -- --------------------------------------------------------
 
@@ -456,15 +449,8 @@ CREATE TABLE `vhn_phieus` (
 --
 
 INSERT INTO `vhn_phieus` (`id`, `name`, `type`, `fee`, `date_import`, `file`, `sort`, `status`, `created_at`, `updated_at`) VALUES
-(3, 'Tiền nhà tháng 9', 2, 5000000, '2021-10-06 00:00:00', NULL, 1, 1, '2021-10-05 17:00:00', '2021-10-29 22:09:20'),
-(4, 'Vốn kinh doanh', 1, 50000000, '2021-09-01 00:00:00', NULL, 1, 1, '2021-10-06 17:00:00', '2021-10-06 17:00:00'),
-(5, 'Mua Tua Vit', 2, 250000, '2021-10-08 00:00:00', NULL, 1, 1, '2021-10-07 17:00:00', '2021-10-07 17:00:00'),
-(6, 'Bộ test bàn phím laptop', 2, 633000, '2021-10-10 00:00:00', NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
-(7, 'Khăn vệ sinh máy', 2, 191000, '2021-10-13 00:00:00', NULL, 1, 1, '2021-10-12 17:00:00', '2021-10-12 17:00:00'),
-(8, 'thêm vốn', 1, 20000000, '2021-10-13 00:00:00', NULL, 1, 1, '2021-10-12 17:00:00', '2021-10-12 17:00:00'),
-(9, 'Mua 2 ghế xoay', 2, 631000, '2021-10-18 00:00:00', NULL, 1, 1, '2021-10-17 17:00:00', '2021-10-17 17:00:00'),
-(10, 'Mua nhíp công mũi nhọn inox', 2, 182000, '2021-10-19 00:00:00', NULL, 1, 1, '2021-10-18 17:00:00', '2021-10-18 17:00:00'),
-(11, 'Mua tay hàn + mỏ hàn', 2, 270000, '2021-10-21 00:00:00', NULL, 1, 1, '2021-10-20 17:00:00', '2021-10-20 17:00:00');
+(12, '60 trieu', 1, 58345000, '2021-11-26 00:00:00', NULL, NULL, 1, '2021-11-25 19:09:01', '2021-11-25 19:09:16'),
+(13, 'dsfsdfd', 1, 126000, '2021-11-26 00:00:00', NULL, NULL, 1, '2021-11-25 19:10:46', '2021-11-25 19:10:46');
 
 -- --------------------------------------------------------
 
@@ -495,9 +481,9 @@ CREATE TABLE `vhn_products` (
 --
 
 INSERT INTO `vhn_products` (`id`, `name`, `image`, `quantity`, `price_sale`, `price_import`, `date_import`, `id_supplier`, `warranty`, `location`, `location_image`, `sort`, `status`, `created_at`, `updated_at`) VALUES
-(4, 'DDR3 PC 1G SAMSUNG (HÀNG CŨ)', '2021-09-25ddr3-pc-2g1600-kingmax-renew1608693478.jpg', 3, 70000, 0, '2021-09-25 00:00:00', 1, 0, NULL, NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
+(4, 'DDR3 PC 1G SAMSUNG (HÀNG CŨ)', '2021-09-25ddr3-pc-2g1600-kingmax-renew1608693478.jpg', 2, 70000, 0, '2021-09-25 00:00:00', 1, 0, NULL, NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
 (5, 'DDR3 PC 1G HYNIZ (HÀNG CŨ)', '2021-09-25RAM-Desktop-DDR3-Hynix-4GB-Bus-1333.jpg', 6, 70000, 0, '2021-09-25 00:00:00', 1, 0, NULL, NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
-(6, 'DDR3 PC 2G KINGSTON (HÀNG CŨ)', '2021-09-25ROG_Zephyrus_G15_wallpaper_2560x1440.jpg', 2, 150000, 0, '2021-09-25 00:00:00', 4, 0, NULL, NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
+(6, 'DDR3 PC 2G KINGSTON (HÀNG CŨ)', '2021-09-25ROG_Zephyrus_G15_wallpaper_2560x1440.jpg', 1, 150000, 0, '2021-09-25 00:00:00', 4, 0, NULL, NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
 (7, 'DDR3 PC 2G KINGMAX (HÀNG CŨ)', '2021-09-25unnamed(3).jpg', 1, 150000, 0, '2021-09-25 00:00:00', 1, 0, NULL, NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
 (8, 'DDR3 PC 2G HYNIZ (HÀNG CŨ)', '2021-09-25unnamed(3).jpg', 1, 150000, 0, '2021-09-25 00:00:00', 5, 0, NULL, NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
 (9, 'DDR3 PC 4G KINGSTON (HÀNG CŨ)', '2021-09-25unnamed(3).jpg', 1, 290000, 0, '2021-09-25 00:00:00', 1, 0, NULL, NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
@@ -507,7 +493,7 @@ INSERT INTO `vhn_products` (`id`, `name`, `image`, `quantity`, `price_sale`, `pr
 (13, 'DDR3 LAPTOP 2G HYNIX/KINGSTON/SAMSUNG (HÀNG CŨ)', '2021-09-25unnamed(3).jpg', 3, 150000, 0, '2021-09-25 00:00:00', 5, 0, NULL, NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
 (14, 'DDR2 LAPTOP 1G HYNIX/KINGSTON/SAMSUNG (HÀNG CŨ)', '2021-09-25RAM-Desktop-DDR3-Hynix-4GB-Bus-1333.jpg', 7, 50000, 0, '2021-09-25 00:00:00', 5, 0, NULL, NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
 (15, 'DDR4 LAPTOP 4G HYNIX/KINGSTON/SAMSUNG (HÀNG CŨ)', '2021-09-25unnamed(3).jpg', 2, 450000, 0, '2021-09-25 00:00:00', 5, 0, NULL, NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
-(16, 'THẺ NHỚ MIXIE 64G', '2021-05-13the-nho-microsd-64g-mixie-box-class10-95mbs-chinh-hang1621837821.png', 0, 230000, 126000, '2021-05-13 00:00:00', 5, 12, NULL, NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
+(16, 'THẺ NHỚ MIXIE 64G', '2021-05-13the-nho-microsd-64g-mixie-box-class10-95mbs-chinh-hang1621837821.png', 1, 230000, 126000, '2021-05-13 00:00:00', 5, 12, NULL, NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
 (17, 'USB 2.0 16G TOSHIBA', '2021-03-26usb-20-16g-toshiba-cong-ty1611472469_149.82578397213x250.png', 5, 120000, 62000, '2021-03-26 00:00:00', 1, 24, NULL, NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
 (18, 'USB 2.0 8G TOSHIBA', '2021-03-26usb-20-8g-toshiba-cong-ty1611472464_149.82578397213x250.png', 3, 100000, 60000, '2021-03-26 00:00:00', 1, 24, NULL, NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
 (19, 'USB 2.0 4G TOSHIBA', '2021-03-26usb-20-4g-toshiba-cong-ty1611472449_149.82578397213x250.png', 3, 80000, 48000, '2021-03-26 00:00:00', 1, 24, NULL, NULL, 1, 1, '2021-10-09 17:00:00', '2021-10-09 17:00:00'),
@@ -660,7 +646,7 @@ CREATE TABLE `vhn_setups` (
 --
 
 INSERT INTO `vhn_setups` (`id`, `name`, `value`, `text`) VALUES
-(1, 'percent', 30, NULL);
+(1, 'percent', 80, NULL);
 
 -- --------------------------------------------------------
 
@@ -782,7 +768,7 @@ ALTER TABLE `vhn_hd_sanphams`
 --
 ALTER TABLE `vhn_hd_suachuas`
   ADD PRIMARY KEY (`id_hd`,`stt`),
-  ADD KEY `congno` (`id_congno`);
+  ADD KEY `congno` (`id_congno11`);
 
 --
 -- Chỉ mục cho bảng `vhn_hd_tunhaps`
@@ -876,13 +862,13 @@ ALTER TABLE `vhn_hoadon_pros`
 -- AUTO_INCREMENT cho bảng `vhn_hoadon_scs`
 --
 ALTER TABLE `vhn_hoadon_scs`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT cho bảng `vhn_phieus`
 --
 ALTER TABLE `vhn_phieus`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT cho bảng `vhn_products`
@@ -941,7 +927,7 @@ ALTER TABLE `vhn_hd_sanphams`
 -- Các ràng buộc cho bảng `vhn_hd_suachuas`
 --
 ALTER TABLE `vhn_hd_suachuas`
-  ADD CONSTRAINT `vhn_hd_suachuas_ibfk_1` FOREIGN KEY (`id_congno`) REFERENCES `vhn_suppliers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `vhn_hd_suachuas_ibfk_1` FOREIGN KEY (`id_congno11`) REFERENCES `vhn_suppliers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `vhn_hd_suachuas_ibfk_2` FOREIGN KEY (`id_hd`) REFERENCES `vhn_hoadon_scs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --

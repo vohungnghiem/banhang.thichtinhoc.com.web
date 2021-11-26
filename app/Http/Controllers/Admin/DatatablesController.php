@@ -265,17 +265,14 @@ class DatatablesController extends Controller
             ->leftJoin('vhn_hd_kiemtras','vhn_hd_kiemtras.id_hd','=','vhn_hoadon_scs.id')
             ->leftJoin('vhn_hd_suachuas','vhn_hd_suachuas.id_hd','=','vhn_hoadon_scs.id')
             ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_scs.id')
-            ->leftJoin('vhn_suppliers','vhn_hd_suachuas.id_congno','=','vhn_suppliers.id')
+            // ->leftJoin('vhn_suppliers','vhn_hd_suachuas.id_congno','=','vhn_suppliers.id')
             ->select(
                 'vhn_hoadon_scs.*','vhn_hd_kiemtras.name',
                 DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_kiemtras.name) as arr_name"),
                 DB::raw("SUM( DISTINCT vhn_hd_kiemtras.fee) AS totalkt"),
-                DB::raw("SUM(  vhn_hd_suachuas.price + vhn_hd_suachuas.fee) AS totalsc"),
+                DB::raw("SUM( vhn_hd_suachuas.price + vhn_hd_suachuas.fee) AS totalsc"),
                 DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_sanphams.total,'-',vhn_hd_sanphams.id_type) as totalsp"),
-                // DB::raw("GROUP_CONCAT(DISTINCT vhn_suppliers.name,'-',vhn_hd_suachuas.ngay_congno) as congno"),
-                DB::raw("GROUP_CONCAT(DISTINCT CASE WHEN (vhn_hd_suachuas.id_congno > 0) AND (vhn_hd_suachuas.ngay_congno IS NULL) THEN vhn_suppliers.name ELSE NULL END , '*' ) as congno"),
-
-                // DB::raw("SUM( CASE WHEN (vhn_hoadon_scs.status = 4) AND (vhn_hd_suachuas.ngay_congno IS NULL) THEN vhn_hd_suachuas.price ELSE 0 END) AS tiencongno"),
+                DB::raw("GROUP_CONCAT(DISTINCT CASE WHEN (vhn_hoadon_scs.id_congno > 0) AND (vhn_hoadon_scs.ngay_congno IS NULL) THEN vhn_hoadon_scs.tenkh ELSE NULL END , '*' ) as congno"),
             )
             ->groupBy('vhn_hoadon_scs.id')
             ->orderBy('vhn_hoadon_scs.id','desc')->get();
@@ -311,12 +308,12 @@ class DatatablesController extends Controller
         });
         $datatables->editColumn('congno', function ($item) {
             if (isset($item->congno)) {
-                $result = '<div class="badge badge-xs badge-danger" data-toggle="tooltip" title="'.$item->congno.'">
+                $result = '<div class="badge badge-xs badge-danger" data-toggle="tooltip" title="'.$item->tenkh.'">
                     <i class="fas fa-comment-dots"></i> còn nợ
                 </div> ';
             }else{
-                $result = '<div class="badge badge-xs badge-success" data-toggle="tooltip" title="'.$item->congno.'">
-                    <i class="fas fa-comment-dots"></i> hết nợ
+                $result = '<div class="badge badge-xs badge-secondary" data-toggle="tooltip" title="'.$item->tenkh.'">
+                    <i class="fas fa-comment-dots"></i> không nợ
                 </div> ';
             }
 
@@ -356,14 +353,14 @@ class DatatablesController extends Controller
                 <i class="fas fa-trash-alt"></i></div> <span class="btn-loinhuan"><span class="form-loinhuan"></span></span>';
             }else{
                 $delete = '
-                <div class="btn btn-xs btn-dark btn-loinhuan" data-toggle="tooltip" title="nhập lợi nhuận"  >
+                <div class="btn btn-xs btn-dark btn-loinhuan" data-toggle="tooltip" data-html="true" title="lợi nhuận: '.number_format($item->loinhuan).'<br> hồi vốn: '.number_format($item->hoivon).' "  >
                 <i class="fas fa-dollar-sign"></i></div> ';
-                $delete .= '<form class="input-group input-group-sm form-loinhuan" style="display:none" action="hoadonscs/loinhuan/'.$item->id.'" method="POST" > '.csrf_field().'
-                    <input type="text" name="loinhuan" value="'.$item->loinhuan.'" class="form-control number">
-                    <div class="input-group-append">
-                        <button class="input-group-text">ok</button>
-                    </div>
-                </form>';
+                // $delete .= '<form class="input-group input-group-sm form-loinhuan" style="display:none" action="hoadonscs/loinhuan/'.$item->id.'" method="POST" > '.csrf_field().'
+                //     <input type="text" name="loinhuan" value="'.$item->loinhuan.'" class="form-control number">
+                //     <div class="input-group-append">
+                //         <button class="input-group-text">ok</button>
+                //     </div>
+                // </form>';
             }
             $ghichu = '
             <div class="btn btn-xs btn-dark btn-ghichu" data-toggle="tooltip" title="nhập ghi chú"  >

@@ -98,6 +98,12 @@
                         <p>Hóa đơn Sửa chửa</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="congnos" class="nav-link">
+                        <i class="fas fa-receipt"></i>
+                        <p>Công nợ</p>
+                    </a>
+                </li>
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

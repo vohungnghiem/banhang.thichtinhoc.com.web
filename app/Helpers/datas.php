@@ -24,6 +24,13 @@ function loaidichvus() {
     ]);
 }
 
+function congnos() {
+    return collect([
+        (object) [ "id" => "0", "name" => "Không"],
+        (object) [ "id" => "1", "name" => "Công nợ"],
+    ]);
+}
+
 function tinhtrangs() {
     return collect([
         (object) [ "id" => "1", "name" => "Đã tiếp nhận", "color" => "primary"],
