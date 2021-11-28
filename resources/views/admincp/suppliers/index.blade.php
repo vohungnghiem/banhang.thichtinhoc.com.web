@@ -24,8 +24,6 @@
                                             <th>#</th>
                                             <th>Name</th>
                                             {{-- <th>Status</th> --}}
-                                            <th>Tiền công nợ</th>
-                                            <th>Ngày đòi nợ gần nhất</th>
                                             <th class="text-center">Actions</th>
                                         </tr>
                                     </thead>
@@ -34,8 +32,6 @@
                                         <tr class="wraptr{{$item->id}}">
                                             <td></td>
                                             <td>{{$item->name}}</td>
-                                            <td>{{number_format($item->tiencongno)}}</td>
-                                            <td>{{$item->ngay_congno != null ? datevn($item->ngay_congno) : ''}}</td>
                                             {{-- <td>
                                                 @if ($item->status == 1)
                                                     <div class="btn btn-xs btn-success btn-status" data-id="{{$item->id}}" data-toggle="tooltip" title="{{__('admin.update_status')}}">
@@ -48,9 +44,6 @@
                                                 @endif
                                             </td> --}}
                                             <td>
-                                                <div href="suppliers/congno/{{$item->id}}" class="btn btn-xs btn-warning btn-congno" data-id="{{$item->id}}" data-toggle="tooltip" title="đòi nợ">
-                                                    <i class="fas fa-dollar-sign"></i>
-                                                </div>
                                                 <a href="suppliers/edit/{{$item->id}}" class="btn btn-xs btn-primary" data-toggle="tooltip" title="{{__('admin.update_info')}}">
                                                     <i class="fas fa-pen-nib"></i>
                                                 </a>
@@ -91,9 +84,8 @@
                 columnDefs: [
                     {	orderable: false},
                     { "width": "3%", "targets": 0},
-                    { "width": "20%", "targets": 2, "className": "text-center"},
-                    { "width": "10%", "targets": 3, "className": "text-center"},
-                    { "width": "5%", "targets": 4, "className": "text-center"},
+                    { "width": "5%", "targets": 2, "className": "text-center"},
+                    // { "width": "10%", "targets": 3, "className": "text-center"},
                 ],
                 "ordering": false,
                 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -109,7 +101,6 @@
     </script>
     <script>
         status('suppliers');
-        congno('suppliers');
         destroy('suppliers');
     </script>
 @endpush

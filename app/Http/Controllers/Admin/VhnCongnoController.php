@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-// use App\Models\Supplier;
 class VhnCongnoController extends Controller
 {
     public function index() {
@@ -42,6 +41,7 @@ class VhnCongnoController extends Controller
     }
     public function list($id) {
         try {
+            $hoadonsc = DB::table('vhn_hoadon_scs')->where('id',$id)->first();
             $listsc =DB::table('vhn_hd_suachuas')
                 ->where('vhn_hd_suachuas.id_hd',$id)
                 ->get();
@@ -49,7 +49,7 @@ class VhnCongnoController extends Controller
                 ->where('vhn_hd_sanphams.id_hd',$id)
                 ->where('vhn_hd_sanphams.id_type','sc')
                 ->get();
-            return view('admincp.congnos.list',compact('listsc','listsp'));
+            return view('admincp.congnos.list',compact('hoadonsc','listsc','listsp'));
         } catch (\Throwable $th) {
             return response()->json('error');
         }
