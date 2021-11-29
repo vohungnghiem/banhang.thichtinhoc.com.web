@@ -35,18 +35,18 @@
                                         <tr class="wraptr{{$item->id}}">
                                             <td></td>
                                             <td>{{$item->name}}</td>
-                                            <td>{{number_format($item->price + $item->totalsp)}}</td>
+                                            <td>{{number_format($item->congno)}}</td>
                                             @if ($item->ngay_congno != null)
                                                 <td>{{ datevn($item->ngay_congno) }}</td>
                                                 <td>
-                                                    <div href="congnos/congno/{{$item->id}}" class="btn btn-xs btn-info btn-congno" data-id="{{$item->id}}" data-toggle="tooltip" title="đòi nợ">
+                                                    <div href="congnos/congno/{{$item->id}}" class="btn btn-xs btn-info btn-congno" data-id="{{$item->id}}" data-date="{{$item->ngay_congno}}" data-toggle="tooltip" title="đòi nợ">
                                                         <i class="fas fa-dollar-sign"></i> đã đòi nợ
                                                     </div>
                                                 </td>
                                             @else
                                                 <td></td>
                                                 <td>
-                                                    <div href="congnos/congno/{{$item->id}}" class="btn btn-xs btn-danger btn-congno" data-id="{{$item->id}}" data-toggle="tooltip" title="đòi nợ">
+                                                    <div href="congnos/congno/{{$item->id}}" class="btn btn-xs btn-danger btn-congno" data-id="{{$item->id}}" data-date="{{$item->ngay_congno}}" data-toggle="tooltip" title="đòi nợ">
                                                         <i class="fas fa-dollar-sign"></i> chưa đòi nợ
                                                     </div>
                                                 </td>
@@ -97,8 +97,11 @@
                 columnDefs: [
                     {	orderable: false},
                     { "width": "3%", "targets": 0},
-                    { "width": "5%", "targets": 2, "className": "text-center"},
-                    // { "width": "10%", "targets": 3, "className": "text-center"},
+                    { "width": "20%", "targets": 2},
+                    { "width": "5%", "targets": 3},
+                    { "width": "5%", "targets": 4, "className": "text-center"},
+                    { "width": "5%", "targets": 5, "className": "text-center"},
+                    { "width": "10%", "targets": 6, "className": "text-center"},
                 ],
                 "ordering": false,
                 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {

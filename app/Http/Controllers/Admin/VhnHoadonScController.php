@@ -142,6 +142,16 @@ class VhnHoadonScController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            if ($request->add_congno) {
+                $congno = DB::table('vhn_congnos')
+                ->updateOrInsert(
+                    ['name' => $request->add_congno],
+                    ['status' => 1,'sort' => 1, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')]
+                );
+                $id_congno = DB::getPdo()->lastInsertId();
+            }else{
+                $id_congno = $request->id_congno;
+            }
             DB::table('vhn_hoadon_scs')
                 ->where('id', $id)
                 ->update([
@@ -153,7 +163,7 @@ class VhnHoadonScController extends Controller
                     'email' => $request->email,
                     'dulieucangiu' => $request->dulieucangiu,
                     'loaidichvu' => $request->loaidichvu,
-                    'id_congno' => $request->id_congno,
+                    'id_congno' => $id_congno,
                     'sort' => $request->sort,
                     'status' => $request->status,
                     'updated_at' => date("Y-m-d H:i:s")

@@ -9,18 +9,6 @@ use App\Models\Congno;
 class VhnCongnoController extends Controller
 {
     public function index() {
-        // $congnos = Congno::all();
-        // $congnos =DB::table('vhn_hoadon_scs')
-        //     ->leftJoin('vhn_hd_kiemtras','vhn_hd_kiemtras.id_hd','=','vhn_hoadon_scs.id')
-        //     ->leftJoin('vhn_hd_suachuas','vhn_hd_suachuas.id_hd','=','vhn_hoadon_scs.id')
-        //     ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_scs.id')
-        //     ->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.status','>=',4]])
-        //     ->select(
-        //         'vhn_hoadon_scs.*',
-        //         DB::raw("SUM( vhn_hd_kiemtras.fee + vhn_hd_suachuas.price + vhn_hd_suachuas.fee + vhn_hd_sanphams.total ) AS congno"),
-        //     )
-        //     ->groupBy('vhn_hoadon_scs.id_congno')
-        //     ->orderBy('vhn_hoadon_scs.id_congno','desc')->get();
         $congnos = DB::table('vhn_congnos')
             ->leftJoin('vhn_hoadon_scs','vhn_hoadon_scs.id_congno','=','vhn_congnos.id')
             ->leftJoin('vhn_hd_suachuas','vhn_hd_suachuas.id_hd','=','vhn_hoadon_scs.id')
@@ -29,10 +17,12 @@ class VhnCongnoController extends Controller
             ->select(
                 'vhn_congnos.*',
                 'vhn_hoadon_scs.ngay_congno',
-                'vhn_hd_suachuas.price',
-                'vhn_hd_sanphams.total as totalsp',
+                DB::raw("SUM( CASE WHEN vhn_hd_sanphams.total IS NOT NULL AND vhn_hd_sanphams.id_type = 'sc' THEN (vhn_hd_suachuas.price + vhn_hd_sanphams.total) ELSE vhn_hd_suachuas.price END ) as congno"),
+                DB::raw("(CASE WHEN vhn_hoadon_scs.ngay_congno IS NULL THEN 0 ELSE 1 END ) AS ngaynull"),
             )
-            ->groupBy('vhn_congnos.id')
+            ->groupBy('vhn_congnos.id','vhn_hoadon_scs.ngay_congno')
+            ->orderBy('ngaynull','asc')
+            ->orderBy('vhn_hoadon_scs.ngay_congno','desc')
             ->get();
         // dd($congnos);
         return view('admincp.congnos.index',compact('congnos'));
@@ -79,7 +69,7 @@ class VhnCongnoController extends Controller
     }
     public function congno(Request $request) {
         try {
-            $congnos = DB::table('vhn_hoadon_scs')->where([['id_congno',$request->id],['status',4]])->get();
+            $congnos = DB::table('vhn_hoadon_scs')->where([['id_congno',$request->id],['status',4],['ngay_congno', '=', $request->date]])->get();
             foreach ($congnos as $item) {
                 if ($item->ngay_congno != null) {
                     DB::table('vhn_hoadon_scs')

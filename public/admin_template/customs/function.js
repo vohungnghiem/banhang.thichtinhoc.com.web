@@ -78,8 +78,10 @@ function congno(params) {
         }).then((result) => {
             if (result.isConfirmed) {
                 var id = $(this).attr('data-id');
+                var date = $(this).attr('data-date');
                 $.post(params + "/congno", {
                         id: id,
+                        date: date
                     },
                     function(result) {
                         swal_condition(result);
