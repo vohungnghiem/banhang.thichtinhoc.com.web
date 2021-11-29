@@ -13,13 +13,23 @@ class VhnHoadonScController extends Controller
     }
     public function create() {
         $products = DB::table('vhn_products')->get();
-        $congnos = DB::table('vhn_suppliers')->get();
+        $congnos = DB::table('vhn_congnos')->get();
         return view('admincp.hoadonscs.create',compact('products','congnos'));
     }
     public function store(Request $request) {
         try {
             $mahoadon = DB::table('vhn_hoadon_scs')->latest()->first();
             $mahoadon = isset($mahoadon->mahoadon) ? $mahoadon->mahoadon + 1  : 1;
+            if ($request->add_congno) {
+                $congno = DB::table('vhn_congnos')
+                ->updateOrInsert(
+                    ['name' => $request->add_congno],
+                    ['status' => 1,'sort' => 1, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')]
+                );
+                $id_congno = DB::getPdo()->lastInsertId();
+            }else{
+                $id_congno = $request->id_congno;
+            }
             $id = DB::table('vhn_hoadon_scs')->insertGetId(
                 [
                     'mahoadon' => $mahoadon,
@@ -31,7 +41,7 @@ class VhnHoadonScController extends Controller
                     'email' => $request->email,
                     'dulieucangiu' => $request->dulieucangiu,
                     'loaidichvu' => $request->loaidichvu,
-                    'id_congno' => $request->id_congno,
+                    'id_congno' => $id_congno,
                     'sort' => $request->sort,
                     'status' => $request->status,
                     'created_at' => date("Y-m-d H:i:s"),
@@ -80,8 +90,6 @@ class VhnHoadonScController extends Controller
                         'stt' => $key,
                         'name' => $item['name'],
                         'price' => $item['price'] ? str_replace([' ',',','_'], '', $item['price']) : 0,
-                        // 'fee' => $item['fee'] ? str_replace([' ',',','_'], '', $item['fee']) : 0,
-                        // 'id_congno' => $item['id_congno']
                     ]);
                 }
             }
@@ -93,7 +101,7 @@ class VhnHoadonScController extends Controller
     public function edit($id) {
         try {
             $products = DB::table('vhn_products')->get();
-            $congnos = DB::table('vhn_suppliers')->get();
+            $congnos = DB::table('vhn_congnos')->get();
             $hoadonsc = DB::table('vhn_hoadon_scs')->where('id',$id)->first();
             $hdsanphams = DB::table('vhn_hd_sanphams')->where([['id_hd',$id],['id_type','sc']])->get();
             $hdkiemtras = DB::table('vhn_hd_kiemtras')->where('id_hd',$id)->get();

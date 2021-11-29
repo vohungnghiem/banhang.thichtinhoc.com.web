@@ -22,7 +22,6 @@ class HomeController extends Controller
         $phieuthu = DB::table('vhn_phieus')->where('type','=',1)->sum('fee');
         $phieuchi = DB::table('vhn_phieus')->where('type','=',2)->sum('fee');
         $hoivon = DB::table('vhn_hoadon_scs')
-            // ->where([['vhn_hoadon_scs.status','>=',4],['vhn_hoadon_scs.id_congno','<=',0],['vhn_hoadon_scs.ngay_congno','<>',NULL]])
             ->where('vhn_hoadon_scs.status','>=',4)
             ->where(function($q) {
                 $q->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.ngay_congno','<>',NULL]])

@@ -12,9 +12,9 @@
                     <div class="col-12">
                         <div class="card card-primary card-outline">
                             <div class="card-header">
-                                <h3 class="card-title">Cộng nợ</h3>
+                                <h3 class="card-title">Công nợ</h3>
                                 <div class="card-tools">
-                                    <a class="btn btn-sm btn-primary" href="congnos/create"><i class="fas fa-plus"> </i> Thêm công ty / tổ chức</a>
+                                    {{-- <a class="btn btn-sm btn-primary" href="suppliers/create"><i class="fas fa-plus"> </i> Tạo nhà cung cấp</a> --}}
                                 </div>
                             </div>
                             <div class="card-body">
@@ -22,20 +22,19 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
+                                            <th>Tên Khách hàng</th>
                                             <th>Tiền công nợ</th>
                                             <th>Ngày đòi nợ gần nhất</th>
                                             <th class="text-center">Công nợ</th>
                                             <th class="text-center">Xem</th>
-                                            <th class="text-center">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($congnos as $key => $item)
                                         <tr class="wraptr{{$item->id}}">
                                             <td></td>
-                                            <td>{{$item->name}}</td>
-                                            <td>{{number_format($item->price + $item->totalsp)}}</td>
+                                            <td>{{$item->tenkh}}</td>
+                                            <td>{{number_format($item->congno)}}</td>
                                             @if ($item->ngay_congno != null)
                                                 <td>{{ datevn($item->ngay_congno) }}</td>
                                                 <td>
@@ -55,14 +54,6 @@
                                                 <a href="congnos/list/{{$item->id}}" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Xem các sản phẩm">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                            </td>
-                                            <td>
-                                                <a href="congnos/edit/{{$item->id}}" class="btn btn-xs btn-primary" data-toggle="tooltip" title="{{__('admin.update_info')}}">
-                                                    <i class="fas fa-pen-nib"></i>
-                                                </a>
-                                                <div class="btn btn-xs btn-danger btn-destroy" data-id="{{$item->id}}" data-toggle="tooltip" title="{{__('admin.delete_info')}}"  >
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </div>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -97,8 +88,10 @@
                 columnDefs: [
                     {	orderable: false},
                     { "width": "3%", "targets": 0},
-                    { "width": "5%", "targets": 2, "className": "text-center"},
-                    // { "width": "10%", "targets": 3, "className": "text-center"},
+                    { "width": "20%", "targets": 2, "className": "text-center"},
+                    { "width": "10%", "targets": 3, "className": "text-center"},
+                    { "width": "5%", "targets": 4, "className": "text-center"},
+                    { "width": "5%", "targets": 5, "className": "text-center"},
                 ],
                 "ordering": false,
                 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -114,7 +107,5 @@
     </script>
     <script>
         congno('congnos');
-        status('congnos');
-        destroy('congnos');
     </script>
 @endpush

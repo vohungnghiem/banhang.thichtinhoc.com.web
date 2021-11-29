@@ -70,9 +70,22 @@ Route::group(['middleware' => 'auth','namespace' => 'App\Http\Controllers\Admin'
 
     Route::group(['prefix' => 'congnos'],function(){
         Route::get('/','VhnCongnoController@index');
-        Route::get('list/{id}','VhnCongnoController@list');
+        Route::get('create','VhnCongnoController@create');
+        Route::post('store', 'VhnCongnoController@store');
+        Route::get('edit/{id}', 'VhnCongnoController@edit');
+        Route::post('{id}/update', 'VhnCongnoController@update');
+        Route::post('status','VhnCongnoController@status');
+        Route::post('remove_img','VhnCongnoController@remove_img');
+        Route::post('destroy', 'VhnCongnoController@destroy');
         Route::post('congno', 'VhnCongnoController@congno');
+        Route::get('list/{id}','VhnCongnoController@list');
     });
+
+    // Route::group(['prefix' => 'congnos'],function(){
+    //     Route::get('/','VhnCongnoController@index');
+    //     Route::get('list/{id}','VhnCongnoController@list');
+    //     Route::post('congno', 'VhnCongnoController@congno');
+    // });
 
     Route::group(['prefix' => 'products'],function(){
         Route::get('/','VhnProductController@index');

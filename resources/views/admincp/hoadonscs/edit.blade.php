@@ -57,7 +57,7 @@
                                                 <label> Dữ liệu cần giữ (ghi rõ đường dẫn)</label>
                                                 <textarea name="dulieucangiu" rows="1" class="form-control" placeholder="Dữ liệu cần giữ">{{$hoadonsc->dulieucangiu}}</textarea>
                                             </div>
-                                            <div class="form-group col-lg-12">
+                                            {{-- <div class="form-group col-lg-12">
                                                 <label> Công nợ </label>
                                                 <div class="form-group clearfix">
                                                     @foreach (congnos() as $item)
@@ -67,6 +67,20 @@
                                                         </div>
                                                     @endforeach
                                                 </div>
+                                            </div> --}}
+                                            <div class="form-group col-lg-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend"> <span class="input-group-text">Công nợ (Chọn)</span> </div>
+                                                    <select name="id_congno" id="id_congno" class="form-control select2bs4">
+                                                        <option value="0">Khách lẻ (không công nợ)</option>
+                                                        @foreach ($congnos as $item)
+                                                            <option value="{{$item->id}}" @if($hoadonsc->id_congno == $item->id) selected @endif> {{$item->name}} </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <button type="button" id="but_congno" class="btn btn-outline-primary"> Thêm  </button> <span id="congno"></span>
                                             </div>
                                             <div class="form-group col-lg-12">
                                                 <label> Loại dịch vụ </label>
@@ -221,7 +235,7 @@
             height: 38px !important;
         }
         .select2-container--default .select2-selection--single .select2-selection__rendered {
-            line-height: 20px;
+            line-height: 27px;
         }
         .select2-container--default .select2-selection--single .select2-selection__arrow b {
             margin-top: 2px;
@@ -229,148 +243,171 @@
     </style>
 @endpush
 @push('scripts')
-    <script src="admin_template/plugins/inputmask/jquery.inputmask.js"></script>
-    <script>
-        $('.datemask').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' });
-        $('.number').inputmask('999,999,999', { numericInput: true });
-    </script>
-    <script>
-        var count = $('#products .btn-row').length;
-        $(document).on('click', '.btn-sanpham', function(event) {
-            var html = '';
-            html += '<div class="row btn-row">'+
-                '<div class="form-group col-lg-6">'+
-                    '<div class="input-group">'+
-                        '<div class="input-group-prepend"> <span class="input-group-text">Sản phẩm</span> </div>'+
-                        '<select name="hd_sanpham['+count+'][id]" class="form-control  sanpham select2bs4">'+
-                            '@foreach ($products as $item)'+
-                            '<option value="{{$item->id}}" data-image="{{storage_link_show('product',$item->created_at).$item->image}}?v={{time()}}">{{$item->name}} (sp: {{$item->quantity}} ) (giá: {{number_format($item->price_sale)}}) {{baohanh($item)}} </option>'+
-                            '@endforeach'+
-                            '<option value="0">Không chọn</option>'+
-                        '</select>'+
-                    '</div>'+
-                '</div>'+
-                '<div class="form-group col-lg-2">'+
-                    '<div class="input-group">'+
-                        '<div class="input-group-prepend"> <span class="input-group-text">Số lượng</span> </div>'+
-                        '<input type="number" name="hd_sanpham['+count+'][quantity]" value="1" class="form-control " >'+
-                    '</div>'+
-                '</div>'+
-                '<div class="form-group col-lg-2">'+
-                    '<div class="input-group">'+
-                        '<div class="input-group-prepend"> <span class="input-group-text">Bảo hành</span> </div>'+
-                        '<input type="number" name="hd_sanpham['+count+'][warranty]" value="36" class="form-control warranty" >'+
-                    '</div>'+
-                '</div>'+
-                '<div class="form-group col-lg-2">'+
-                    '<div class="input-group">'+
-                        '<div class="input-group-prepend"> <span class="input-group-text">Xóa</span> </div>'+
-                        '<div class="btn btn-danger btn-remove"><i class="fas fa-trash-alt"></i></div>'+
-                    '</div>'+
-                '</div>'+
-            '</div>';
-            $('#products').append(html);
-            selectRefresh();
-            ++count;
-        });
-        $(document).on('click','.btn-remove',function(event){
-            event.preventDefault();
-            $(this).parent().parent().parent().remove();
-        });
-        var count_kt = $('#kiemtras .btn-row').length;
-        $(document).on('click', '.btn-kiemtra', function(event) {
-            var html = '';
-            html += '<div class="row btn-row">'+
-                '<div class="form-group col-lg-5">'+
-                    '<label>Tên thiết bị</label>'+
-                    '<input type="text" name="dh_kiemtra['+count_kt+'][name]" class="form-control " >'+
-                '</div>'+
-                '<div class="form-group col-lg-2">'+
-                    '<label>Bệnh trạng</label>'+
-                    '<input type="text" name="dh_kiemtra['+count_kt+'][benhtrang]" value="" class="form-control " >'+
-                '</div>'+
-                '<div class="form-group col-lg-2">'+
-                    '<label>Đề xuất</label>'+
-                    '<input type="text" name="dh_kiemtra['+count_kt+'][dexuat]" class="form-control" >'+
-                '</div>'+
-                '<div class="form-group col-lg-2">'+
-                    '<label>Ghi chú</label>'+
-                    '<input type="text" name="dh_kiemtra['+count_kt+'][ghichu]" class="form-control" >'+
-                '</div>'+
-                '<div class="form-group col-lg-1">'+
-                    '<div>'+
-                        '<label>Xóa</label> <br>'+
-                        '<div class="btn btn-danger btn-remove"><i class="fas fa-trash-alt"></i></div>'+
-                    '</div>'+
-                '</div>'+
-            '</div>';
-            $('#kiemtras').append(html);
-            $('.number').inputmask('999,999,999', { numericInput: true });
-            ++count_kt
-        });
-
-        var count_sc = $('#suachuas .btn-row').length;
-        $(document).on('click', '.btn-suachua', function(event) {
-            var html = '';
-            html += '<div class="row btn-row">'+
-                '<div class="form-group col-lg-6">'+
-                    '<div class="input-group">'+
-                        '<div class="input-group-prepend"> <span class="input-group-text">Tên thiết bị</span> </div>'+
-                        '<input type="text" name="dh_suachua['+count_sc+'][name]" class="form-control " >'+
-                    '</div>'+
-                '</div>'+
-                '<div class="form-group col-lg-2">'+
-                    '<div class="input-group">'+
-                        '<div class="input-group-prepend"> <span class="input-group-text">Giá LK</span> </div>'+
-                        '<input type="text" name="dh_suachua['+count_sc+'][price]" class="form-control number" >'+
-                    '</div>'+
-                '</div>'+
-                '<div class="form-group col-lg-1">'+
-                    '<div class="input-group">'+
-                        '<div class="input-group-prepend"> <span class="input-group-text">Xóa</span> </div>'+
-                        '<div class="btn btn-danger btn-remove"><i class="fas fa-trash-alt"></i></div>'+
-                    '</div>'+
-                '</div>'+
-            '</div>';
-            $('#suachuas').append(html);
-            $('.number').inputmask('999,999,999', { numericInput: true });
-            $(".select2bs4").select2({ });
-            ++count_sc
-        });
-    </script>
-    <script>
-        // select2
-        function selectRefresh() {
-            $("#products .sanpham").select2({
-                templateResult: formatState,
-                templateSelection: formatState
-            });
+<script>
+    var typed = "";
+    $('#id_congno').select2({
+        language: {
+            noResults: function(term) {
+                typed = $('.select2-search__field').val();
+            }
         }
+    });
+$('#id_congno').on('select2:select', function (e) {
+    typed = ""; // clear
+});
+$("#but_congno").on("click", function() {
+    $('#congno').empty().append('<input type="hidden" name="add_congno" value="'+typed+'"> <b>'+typed+'</b>');
+    if (typed) {
+        if ($('#id_congno').find("option[value='" + typed + "']").length) {
+            $('#id_congno').val(typed).trigger('change');
+        } else {
+        var newOption = new Option(typed, typed, true, true);
+            $('#id_congno').append(newOption).trigger('change');
+        }
+    }
+});
+</script>
+<script src="admin_template/plugins/inputmask/jquery.inputmask.js"></script>
+<script>
+    $('.datemask').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' });
+    $('.number').inputmask('999,999,999', { numericInput: true });
+</script>
+<script>
+    var count = $('#products .btn-row').length;
+    $(document).on('click', '.btn-sanpham', function(event) {
+        var html = '';
+        html += '<div class="row btn-row">'+
+            '<div class="form-group col-lg-6">'+
+                '<div class="input-group">'+
+                    '<div class="input-group-prepend"> <span class="input-group-text">Sản phẩm</span> </div>'+
+                    '<select name="hd_sanpham['+count+'][id]" class="form-control  sanpham select2bs4">'+
+                        '@foreach ($products as $item)'+
+                        '<option value="{{$item->id}}" data-image="{{storage_link_show('product',$item->created_at).$item->image}}?v={{time()}}">{{$item->name}} (sp: {{$item->quantity}} ) (giá: {{number_format($item->price_sale)}}) {{baohanh($item)}} </option>'+
+                        '@endforeach'+
+                        '<option value="0">Không chọn</option>'+
+                    '</select>'+
+                '</div>'+
+            '</div>'+
+            '<div class="form-group col-lg-2">'+
+                '<div class="input-group">'+
+                    '<div class="input-group-prepend"> <span class="input-group-text">Số lượng</span> </div>'+
+                    '<input type="number" name="hd_sanpham['+count+'][quantity]" value="1" class="form-control " >'+
+                '</div>'+
+            '</div>'+
+            '<div class="form-group col-lg-2">'+
+                '<div class="input-group">'+
+                    '<div class="input-group-prepend"> <span class="input-group-text">Bảo hành</span> </div>'+
+                    '<input type="number" name="hd_sanpham['+count+'][warranty]" value="36" class="form-control warranty" >'+
+                '</div>'+
+            '</div>'+
+            '<div class="form-group col-lg-2">'+
+                '<div class="input-group">'+
+                    '<div class="input-group-prepend"> <span class="input-group-text">Xóa</span> </div>'+
+                    '<div class="btn btn-danger btn-remove"><i class="fas fa-trash-alt"></i></div>'+
+                '</div>'+
+            '</div>'+
+        '</div>';
+        $('#products').append(html);
         selectRefresh();
-        function formatState (opt) {
-            if (!opt.id) {
-                return opt.text.toUpperCase();
-            }
-            var optimage = $(opt.element).attr('data-image');
-            if(!optimage){
-                return opt.text.toUpperCase();
-            } else {
-                var $opt = $(
-                '<span><img src="' + optimage + '" width="30px" {!!error_img()!!} /> ' + opt.text.toUpperCase() + '</span>'
-                );
-                return $opt;
-            }
-        };
-    </script>
-      <script>
-        $(document).on('change', '.sanpham', function(event) {
-            var index = $(this).parent().parent().parent().index();
-            var id = $(this).val();
-            $.get("/hoadonpros/ajax/"+id, function(data){
-                $('.warranty:eq('+index+')').val(data[0]);
-                $('.totalsp:eq('+index+')').val(data[1].price_sale * data[1].quantity);
-                // console.log(data[1].price_sale);
-            });
-         });
-    </script>
+        ++count;
+    });
+    $(document).on('click','.btn-remove',function(event){
+        event.preventDefault();
+        $(this).parent().parent().parent().remove();
+    });
+    var count_kt = $('#kiemtras .btn-row').length;
+    $(document).on('click', '.btn-kiemtra', function(event) {
+        var html = '';
+        html += '<div class="row btn-row">'+
+            '<div class="form-group col-lg-5">'+
+                '<label>Tên thiết bị</label>'+
+                '<input type="text" name="dh_kiemtra['+count_kt+'][name]" class="form-control " >'+
+            '</div>'+
+            '<div class="form-group col-lg-2">'+
+                '<label>Bệnh trạng</label>'+
+                '<input type="text" name="dh_kiemtra['+count_kt+'][benhtrang]" value="" class="form-control " >'+
+            '</div>'+
+            '<div class="form-group col-lg-2">'+
+                '<label>Đề xuất</label>'+
+                '<input type="text" name="dh_kiemtra['+count_kt+'][dexuat]" class="form-control" >'+
+            '</div>'+
+            '<div class="form-group col-lg-2">'+
+                '<label>Ghi chú</label>'+
+                '<input type="text" name="dh_kiemtra['+count_kt+'][ghichu]" class="form-control" >'+
+            '</div>'+
+            '<div class="form-group col-lg-1">'+
+                '<div>'+
+                    '<label>Xóa</label> <br>'+
+                    '<div class="btn btn-danger btn-remove"><i class="fas fa-trash-alt"></i></div>'+
+                '</div>'+
+            '</div>'+
+        '</div>';
+        $('#kiemtras').append(html);
+        $('.number').inputmask('999,999,999', { numericInput: true });
+        ++count_kt
+    });
+
+    var count_sc = $('#suachuas .btn-row').length;
+    $(document).on('click', '.btn-suachua', function(event) {
+        var html = '';
+        html += '<div class="row btn-row">'+
+            '<div class="form-group col-lg-6">'+
+                '<div class="input-group">'+
+                    '<div class="input-group-prepend"> <span class="input-group-text">Tên thiết bị</span> </div>'+
+                    '<input type="text" name="dh_suachua['+count_sc+'][name]" class="form-control " >'+
+                '</div>'+
+            '</div>'+
+            '<div class="form-group col-lg-2">'+
+                '<div class="input-group">'+
+                    '<div class="input-group-prepend"> <span class="input-group-text">Giá LK</span> </div>'+
+                    '<input type="text" name="dh_suachua['+count_sc+'][price]" class="form-control number" >'+
+                '</div>'+
+            '</div>'+
+            '<div class="form-group col-lg-1">'+
+                '<div class="input-group">'+
+                    '<div class="input-group-prepend"> <span class="input-group-text">Xóa</span> </div>'+
+                    '<div class="btn btn-danger btn-remove"><i class="fas fa-trash-alt"></i></div>'+
+                '</div>'+
+            '</div>'+
+        '</div>';
+        $('#suachuas').append(html);
+        $('.number').inputmask('999,999,999', { numericInput: true });
+        $(".select2bs4").select2({ });
+        ++count_sc
+    });
+</script>
+<script>
+    // select2
+    function selectRefresh() {
+        $("#products .sanpham").select2({
+            templateResult: formatState,
+            templateSelection: formatState
+        });
+    }
+    selectRefresh();
+    function formatState (opt) {
+        if (!opt.id) {
+            return opt.text.toUpperCase();
+        }
+        var optimage = $(opt.element).attr('data-image');
+        if(!optimage){
+            return opt.text.toUpperCase();
+        } else {
+            var $opt = $(
+            '<span><img src="' + optimage + '" width="30px" {!!error_img()!!} /> ' + opt.text.toUpperCase() + '</span>'
+            );
+            return $opt;
+        }
+    };
+</script>
+<script>
+    $(document).on('change', '.sanpham', function(event) {
+        var index = $(this).parent().parent().parent().index();
+        var id = $(this).val();
+        $.get("/hoadonpros/ajax/"+id, function(data){
+            $('.warranty:eq('+index+')').val(data[0]);
+            $('.totalsp:eq('+index+')').val(data[1].price_sale * data[1].quantity);
+        });
+    });
+</script>
 @endpush
