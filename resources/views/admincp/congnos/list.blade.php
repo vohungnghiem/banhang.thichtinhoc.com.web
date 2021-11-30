@@ -11,54 +11,46 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card card-primary card-outline">
-                            <div class="card-header">
-                                <h3 class="card-title">Danh sách sản phẩm ({{$hoadonsc->tenkh}})</h3>
+                            <div class="card-header ">
+                                <h3 class="card-title font-weight-bold {{$date ? 'text-info' : 'text-danger'}}">{{$congno->name}} {{$date ? '(đã thanh toán)' : '(yêu cầu thanh toán)'}}</h3>
                                 <div class="card-tools">
                                 </div>
                             </div>
                             <div class="card-body">
-                                <table class="table table-bordered table-striped dt-responsive nowrap" width="100%">
+                                <table class="table table-bordered table-striped1 dt-responsive nowrap" width="100%">
                                     <thead>
                                         <tr>
                                             <th style="width: 2%">#</th>
-                                            <th>Tên sản phẩm sửa chửa</th>
+                                            <th>Tên sản phẩm</th>
                                             <th style="width: 200px">Tiền công nợ</th>
-
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($listsc as $key => $item)
-                                        <tr>
-                                            <td>{{++$key}}</td>
-                                            <td>{{$item->name}}</td>
-                                            <td>{{number_format($item->price)}}</td>
+                                        @foreach($listscs as $key => $item)
+                                        <tr class="bg-secondary">
+                                            <td colspan="3">{{datevn($item->thoigian)}} (MHĐ:{{sprintf("%06d", $item->mahoadon)}}) - Tên khách: {{$item->tenkh}}</td>
                                         </tr>
+                                            @foreach (explode(",", $item->namesc) as $key => $itemsc)
+                                                <tr>
+                                                    <td>{{++$key}}</td>
+                                                    <td>{{explode("-", $itemsc)[0]}}</td>
+                                                    <td class="font-weight-bold">{{number_format(explode("-", $itemsc)[1])}}</td>
+                                                </tr>
+                                            @endforeach
+                                            @if ($item->namesp)
+                                            @foreach (explode(",", $item->namesp) as $itemsp)
+                                                <tr>
+                                                    <td>{{++$key}}</td>
+                                                    <td>(++) {{explode("-", $itemsp)[0]}}</td>
+                                                    <td class="font-weight-bold">{{number_format(explode("-", $itemsp)[1])}}</td>
+                                                </tr>
+                                            @endforeach
+                                            @endif
                                         @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="card-body">
-                                <table class="table table-bordered table-striped dt-responsive nowrap" width="100%">
-                                    <thead>
                                         <tr>
-                                            <th style="width: 2%">#</th>
-                                            <th>Tên sản phẩm bán hàng</th>
-                                            <th>số lượng</th>
-                                            <th>gía tiền</th>
-                                            <th style="width: 200px">Tiền công nợ</th>
-
+                                            <td class="font-weight-bold text-right text-danger pr-5" colspan="2">Tổng tiền:</td>
+                                            <td class="font-weight-bold text-danger">{{number_format(array_sum(array_column($listscs->toArray(), 'congno')))}}</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($listsp as $key => $item)
-                                        <tr>
-                                            <td>{{++$key}}</td>
-                                            <td>{{$item->name}}</td>
-                                            <th>{{$item->quantity}}</th>
-                                            <th>{{number_format($item->price)}}</th>
-                                            <td>{{number_format($item->total)}}</td>
-                                        </tr>
-                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

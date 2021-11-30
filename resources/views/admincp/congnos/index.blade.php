@@ -52,9 +52,15 @@
                                                 </td>
                                             @endif
                                             <td>
-                                                <a href="congnos/list/{{$item->id}}" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Xem các sản phẩm">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
+                                                @if ($item->ngay_congno != null)
+                                                    <a href="congnos/list/{{$item->id}}/{{$item->ngay_congno}}" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Xem các sản phẩm">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                @else
+                                                    <a href="congnos/list/{{$item->id}}/null" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Xem các sản phẩm">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                @endif
                                             </td>
                                             <td>
                                                 <a href="congnos/edit/{{$item->id}}" class="btn btn-xs btn-primary" data-toggle="tooltip" title="{{__('admin.update_info')}}">

@@ -24,8 +24,36 @@ class VhnCongnoController extends Controller
             ->orderBy('ngaynull','asc')
             ->orderBy('vhn_hoadon_scs.ngay_congno','desc')
             ->get();
-        // dd($congnos);
         return view('admincp.congnos.index',compact('congnos'));
+    }
+    public function list($id,$date) {
+        try {
+            if ($date == 'null') {
+                $date = null;
+            }
+            $listscs = DB::table('vhn_congnos')
+            ->leftJoin('vhn_hoadon_scs','vhn_hoadon_scs.id_congno','=','vhn_congnos.id')
+            ->leftJoin('vhn_hd_suachuas','vhn_hd_suachuas.id_hd','=','vhn_hoadon_scs.id')
+            ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_scs.id')
+            ->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.status','>=',4],['vhn_hoadon_scs.ngay_congno',$date]])
+            ->where('vhn_congnos.id',$id)
+            ->select(
+                // 'vhn_congnos.*',
+                'vhn_hoadon_scs.thoigian',
+                'vhn_hoadon_scs.tenkh',
+                'vhn_hoadon_scs.mahoadon',
+                DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_suachuas.name , '-' , vhn_hd_suachuas.price) as namesc"),
+                DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_sanphams.name , '-' , vhn_hd_sanphams.total) as namesp"),
+                DB::raw("SUM( CASE WHEN vhn_hd_sanphams.total IS NOT NULL AND vhn_hd_sanphams.id_type = 'sc' THEN (vhn_hd_suachuas.price + vhn_hd_sanphams.total) ELSE vhn_hd_suachuas.price END ) as congno"),
+            )
+            ->groupBy('vhn_hoadon_scs.id','vhn_hoadon_scs.thoigian')
+            ->get();
+            // dd($listscs);
+            $congno = DB::table('vhn_congnos')->where('id',$id)->first();
+            return view('admincp.congnos.list',compact('listscs','congno','date'));
+        } catch (\Throwable $th) {
+            return response()->json('error');
+        }
     }
     public function create() {
         return view('admincp.congnos.create');
@@ -82,21 +110,6 @@ class VhnCongnoController extends Controller
                 }
             }
             return response()->json('success');
-        } catch (\Throwable $th) {
-            return response()->json('error');
-        }
-    }
-    public function list($id) {
-        try {
-            $hoadonsc = DB::table('vhn_hoadon_scs')->where('id',$id)->first();
-            $listsc =DB::table('vhn_hd_suachuas')
-                ->where('vhn_hd_suachuas.id_hd',$id)
-                ->get();
-            $listsp = DB::table('vhn_hd_sanphams')
-                ->where('vhn_hd_sanphams.id_hd',$id)
-                ->where('vhn_hd_sanphams.id_type','sc')
-                ->get();
-            return view('admincp.congnos.list',compact('hoadonsc','listsc','listsp'));
         } catch (\Throwable $th) {
             return response()->json('error');
         }

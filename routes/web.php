@@ -78,7 +78,7 @@ Route::group(['middleware' => 'auth','namespace' => 'App\Http\Controllers\Admin'
         Route::post('remove_img','VhnCongnoController@remove_img');
         Route::post('destroy', 'VhnCongnoController@destroy');
         Route::post('congno', 'VhnCongnoController@congno');
-        Route::get('list/{id}','VhnCongnoController@list');
+        Route::get('list/{id}/{date}','VhnCongnoController@list');
     });
 
     // Route::group(['prefix' => 'congnos'],function(){
