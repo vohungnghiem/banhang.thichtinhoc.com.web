@@ -35,7 +35,25 @@
                                         <tr class="wraptr{{$item->id}}">
                                             <td></td>
                                             <td>{{$item->name}}</td>
-                                            <td>{{number_format($item->congno)}}</td>
+                                            <td>
+                                                @php
+                                                    $congnosc = 0; $congnosp = 0;
+                                                    if ($item->congno) {
+                                                        foreach (explode(",", $item->congno) as $key => $itemcn) {
+                                                            $congnosc += explode("-", $itemcn)[1];
+                                                        }
+                                                    }
+                                                    if ($item->congnosp) {
+                                                        foreach (explode(",", $item->congnosp) as $key => $itemsp) {
+                                                            if (explode("-", $itemsp)[2] == 'sc') {
+                                                                $congnosp += explode("-", $itemsp)[1];
+                                                            }
+                                                        }
+                                                    }
+                                                @endphp
+
+                                                {{number_format($congnosc + $congnosp)}}
+                                            </td>
                                             @if ($item->ngay_congno != null)
                                                 <td>{{ datevn($item->ngay_congno) }}</td>
                                                 <td>

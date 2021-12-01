@@ -30,26 +30,49 @@
                                         <tr class="bg-secondary">
                                             <td colspan="3">{{datevn($item->thoigian)}} (MHĐ:{{sprintf("%06d", $item->mahoadon)}}) - Tên khách: {{$item->tenkh}}</td>
                                         </tr>
-                                            @foreach (explode(",", $item->namesc) as $key => $itemsc)
+                                            @foreach (explode(",", $item->congno) as $key => $itemsc)
                                                 <tr>
                                                     <td>{{++$key}}</td>
                                                     <td>{{explode("-", $itemsc)[0]}}</td>
                                                     <td class="font-weight-bold">{{number_format(explode("-", $itemsc)[1])}}</td>
                                                 </tr>
                                             @endforeach
-                                            @if ($item->namesp)
-                                            @foreach (explode(",", $item->namesp) as $itemsp)
-                                                <tr>
-                                                    <td>{{++$key}}</td>
-                                                    <td>(++) {{explode("-", $itemsp)[0]}}</td>
-                                                    <td class="font-weight-bold">{{number_format(explode("-", $itemsp)[1])}}</td>
-                                                </tr>
-                                            @endforeach
+                                            @if ($item->congnosp)
+                                                @foreach (explode(",", $item->congnosp) as $key => $itemsp)
+                                                    @if (explode("-", $itemsp)[2] == 'sc')
+                                                        <tr>
+                                                            <td>{{++$key}}</td>
+                                                            <td>(++) {{explode("-", $itemsp)[3]}}</td>
+                                                            <td class="font-weight-bold">{{number_format(explode("-", $itemsp)[1])}}</td>
+                                                        </tr>
+                                                    @endif
+                                                @endforeach
                                             @endif
                                         @endforeach
                                         <tr>
                                             <td class="font-weight-bold text-right text-danger pr-5" colspan="2">Tổng tiền:</td>
-                                            <td class="font-weight-bold text-danger">{{number_format(array_sum(array_column($listscs->toArray(), 'congno')))}}</td>
+                                            <td class="font-weight-bold text-danger">
+                                                @php $tongcongno = 0; @endphp
+                                                @foreach($listscs as $key => $item)
+                                                    @php
+                                                        $congnosc = 0; $congnosp = 0;
+                                                        if ($item->congno) {
+                                                            foreach (explode(",", $item->congno) as $key => $itemcn) {
+                                                                $congnosc += explode("-", $itemcn)[1];
+                                                            }
+                                                        }
+                                                        if ($item->congnosp) {
+                                                            foreach (explode(",", $item->congnosp) as $key => $itemsp) {
+                                                                if (explode("-", $itemsp)[2] == 'sc') {
+                                                                    $congnosp += explode("-", $itemsp)[1];
+                                                                }
+                                                            }
+                                                        }
+                                                       $tongcongno += ($congnosc + $congnosp);
+                                                    @endphp
+                                                @endforeach
+                                                {{number_format($tongcongno)}}
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>

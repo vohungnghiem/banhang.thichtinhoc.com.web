@@ -269,9 +269,10 @@ class DatatablesController extends Controller
             ->select(
                 'vhn_hoadon_scs.*','vhn_hd_kiemtras.name',
                 DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_kiemtras.name) as arr_name"),
-                DB::raw("SUM( DISTINCT vhn_hd_kiemtras.fee) AS totalkt"),
-                DB::raw("SUM( vhn_hd_suachuas.price + vhn_hd_suachuas.fee) AS totalsc"),
-                DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_sanphams.total,'-',vhn_hd_sanphams.id_type) as totalsp"),
+                DB::raw("SUM( DISTINCT vhn_hd_suachuas.price + vhn_hd_suachuas.fee) AS totalsc"),
+                // DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_sanphams.total,'-',vhn_hd_sanphams.id_type) as totalsp"),
+                DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_sanphams.stt ,'-' , vhn_hd_sanphams.total , '-', vhn_hd_sanphams.id_type) as congnosp"),
+                DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_suachuas.stt , '-' , vhn_hd_suachuas.price, '-' , vhn_hd_suachuas.id_hd ) as congnosc"),
                 DB::raw("GROUP_CONCAT(DISTINCT CASE WHEN (vhn_hoadon_scs.id_congno > 0) AND (vhn_hoadon_scs.ngay_congno IS NULL) THEN vhn_hoadon_scs.tenkh ELSE NULL END , '*' ) as congno"),
             )
             ->groupBy('vhn_hoadon_scs.id')
@@ -294,17 +295,32 @@ class DatatablesController extends Controller
             return $item->tenkh;
         });
         $datatables->addColumn('tongtien', function ($item) {
-            $totalsp = 0;
-            if ($item->totalsp) {
-                $arrtotal = $item->totalsp;
-                foreach (explode(",",$arrtotal) as $itemsp) {
-                    $assp = explode("-", $itemsp);
-                    if ($assp[1] == 'sc') {
-                        $totalsp += $assp[0];
+            // $totalsp = 0;
+            // if ($item->totalsp) {
+            //     $arrtotal = $item->totalsp;
+            //     foreach (explode(",",$arrtotal) as $itemsp) {
+            //         $assp = explode("-", $itemsp);
+            //         if ($assp[1] == 'sc') {
+            //             $totalsp += $assp[0];
+            //         }
+            //     }
+            // }
+            // return number_format($item->totalsc) . ' + ' . number_format($totalsp);
+            $congnosc = 0;
+            $congnosp = 0;
+            if ($item->congnosc) {
+                foreach (explode(",", $item->congnosc) as $key => $itemsc) {
+                    $congnosc += explode("-", $itemsc)[1];
+                }
+            }
+            if ($item->congnosp) {
+                foreach (explode(",", $item->congnosp) as $key => $itemsp) {
+                    if (explode("-", $itemsp)[2] == 'sc') {
+                        $congnosp += explode("-", $itemsp)[1];
                     }
                 }
             }
-            return number_format($item->totalsc) . ' + ' . number_format($totalsp);
+            return number_format($congnosc) .' + '. number_format($congnosp) ;
         });
         $datatables->editColumn('congno', function ($item) {
             if (isset($item->congno)) {
