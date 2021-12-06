@@ -81,11 +81,15 @@ Route::group(['middleware' => 'auth','namespace' => 'App\Http\Controllers\Admin'
         Route::get('list/{id}/{date}','VhnCongnoController@list');
     });
 
-    // Route::group(['prefix' => 'congnos'],function(){
-    //     Route::get('/','VhnCongnoController@index');
-    //     Route::get('list/{id}','VhnCongnoController@list');
-    //     Route::post('congno', 'VhnCongnoController@congno');
-    // });
+    Route::group(['prefix' => 'giamgias'],function(){
+        Route::get('/','VhnGiamgiaController@index');
+        Route::get('create','VhnGiamgiaController@create');
+        Route::post('store', 'VhnGiamgiaController@store');
+        Route::get('edit/{id}', 'VhnGiamgiaController@edit');
+        Route::post('{id}/update', 'VhnGiamgiaController@update');
+        Route::post('status','VhnGiamgiaController@status');
+        // Route::post('destroy', 'VhnCongnoController@destroy');
+    });
 
     Route::group(['prefix' => 'products'],function(){
         Route::get('/','VhnProductController@index');

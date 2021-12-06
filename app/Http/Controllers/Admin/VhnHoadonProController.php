@@ -13,7 +13,8 @@ class VhnHoadonProController extends Controller
     }
     public function create() {
         $products = DB::table('vhn_products')->get();
-        return view('admincp.hoadonpros.create',compact('products'));
+        $hdgiamgias = DB::table('vhn_giamgias')->get();
+        return view('admincp.hoadonpros.create',compact('products','hdgiamgias'));
     }
     public function store(Request $request) {
         try {
@@ -50,7 +51,8 @@ class VhnHoadonProController extends Controller
                         'quantity' => $item['quantity'],
                         'price' => $product->price_sale,
                         'total' => $item['quantity'] * $product->price_sale,
-                        'warranty' => $item['warranty']
+                        'warranty' => $item['warranty'],
+                        'giamgia' => $item['giamgia']
                     ]);
                 }
             }
@@ -76,7 +78,8 @@ class VhnHoadonProController extends Controller
             $hoadonpro = DB::table('vhn_hoadon_pros')->where('id',$id)->first();
             $hdsanphams = DB::table('vhn_hd_sanphams')->where([['id_hd',$id],['id_type','pro']])->get();
             $hdtunhaps = DB::table('vhn_hd_tunhaps')->where('id_hd',$id)->get();
-            return view('admincp.hoadonpros.edit',compact('products','hoadonpro','hdsanphams','hdtunhaps'));
+            $hdgiamgias = DB::table('vhn_giamgias')->get();
+            return view('admincp.hoadonpros.edit',compact('products','hoadonpro','hdsanphams','hdtunhaps','hdgiamgias'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error','Error!');
         }
@@ -132,7 +135,8 @@ class VhnHoadonProController extends Controller
                         'quantity' => $item['quantity'],
                         'price' => $product->price_sale,
                         'total' => $item['quantity'] * $product->price_sale,
-                        'warranty' => $item['warranty']
+                        'warranty' => $item['warranty'],
+                        'giamgia' => $item['giamgia']
                     ]);
                 }
             }

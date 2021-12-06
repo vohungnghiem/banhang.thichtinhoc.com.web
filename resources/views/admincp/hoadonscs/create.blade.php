@@ -57,17 +57,6 @@
                                                 <label> Dữ liệu cần giữ (ghi rõ đường dẫn)</label>
                                                 <textarea name="dulieucangiu" rows="1" class="form-control" placeholder="Dữ liệu cần giữ">{{old('dulieucangiu')}}</textarea>
                                             </div>
-                                            {{-- <div class="form-group col-lg-12">
-                                                <label> Công nợ </label>
-                                                <div class="form-group clearfix">
-                                                    @foreach (congnos() as $item)
-                                                        <div class="icheck-info d-inline mr-2">
-                                                            <input type="radio" id="c{{$item->id}}" name="id_congno" value="{{$item->id}}">
-                                                            <label for="c{{$item->id}}">{{$item->name}}</label>
-                                                        </div>
-                                                    @endforeach
-                                                </div>
-                                            </div> --}}
                                             <div class="form-group col-lg-6">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend"> <span class="input-group-text">Công nợ (Chọn)</span> </div>
@@ -237,7 +226,7 @@ $("#but_congno").on("click", function() {
     $(document).on('click', '.btn-sanpham', function(event) {
         var html = '';
         html += '<div class="row btn-row">'+
-            '<div class="form-group col-lg-6">'+
+            '<div class="form-group col-lg-5">'+
                 '<div class="input-group">'+
                     '<div class="input-group-prepend"> <span class="input-group-text">Sản phẩm</span> </div>'+
                     '<select name="hd_sanpham['+count+'][id]" class="form-control  sanpham select2bs4">'+
@@ -260,7 +249,17 @@ $("#but_congno").on("click", function() {
                     '<input type="number" name="hd_sanpham['+count+'][warranty]" value="36" class="form-control warranty" >'+
                 '</div>'+
             '</div>'+
-            '<div class="form-group col-lg-2">'+
+            ' <div class="form-group col-lg-2">'+
+                    '<div class="input-group">'+
+                        '<div class="input-group-prepend"> <span class="input-group-text">Giảm giá</span> </div>'+
+                        '<select name="hd_sanpham['+count+'][giamgia]" class="form-control select2bs4">'+
+                            '@foreach ($hdgiamgias as $item)'+
+                            '<option value="{{$item->code}}">{{$item->code}} ({{number_format($item->giamgia)}})</option>'+
+                            '@endforeach'+
+                        '</select>'+
+                    '</div>'+
+                '</div>'+
+            '<div class="form-group col-lg-1">'+
                 '<div class="input-group">'+
                     '<div class="input-group-prepend"> <span class="input-group-text">Xóa</span> </div>'+
                     '<div class="btn btn-danger btn-remove"><i class="fas fa-trash-alt"></i></div>'+
@@ -268,6 +267,7 @@ $("#but_congno").on("click", function() {
             '</div>'+
         '</div>';
         $('#products').append(html);
+        $(".select2bs4").select2({ });
         selectRefresh();
         ++count;
     });

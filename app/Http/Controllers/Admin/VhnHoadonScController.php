@@ -14,7 +14,8 @@ class VhnHoadonScController extends Controller
     public function create() {
         $products = DB::table('vhn_products')->get();
         $congnos = DB::table('vhn_congnos')->get();
-        return view('admincp.hoadonscs.create',compact('products','congnos'));
+        $hdgiamgias = DB::table('vhn_giamgias')->get();
+        return view('admincp.hoadonscs.create',compact('products','congnos','hdgiamgias'));
     }
     public function store(Request $request) {
         try {
@@ -66,7 +67,8 @@ class VhnHoadonScController extends Controller
                         'quantity' => $item['quantity'],
                         'price' => $product->price_sale,
                         'total' => $item['quantity'] * $product->price_sale,
-                        'warranty' => $item['warranty']
+                        'warranty' => $item['warranty'],
+                        'giamgia' => $item['giamgia']
                     ]);
                 }
             }
@@ -106,7 +108,8 @@ class VhnHoadonScController extends Controller
             $hdsanphams = DB::table('vhn_hd_sanphams')->where([['id_hd',$id],['id_type','sc']])->get();
             $hdkiemtras = DB::table('vhn_hd_kiemtras')->where('id_hd',$id)->get();
             $hdsuachuas = DB::table('vhn_hd_suachuas')->where('id_hd',$id)->get();
-            return view('admincp.hoadonscs.edit',compact('products','congnos','hoadonsc','hdsanphams','hdkiemtras','hdsuachuas'));
+            $hdgiamgias = DB::table('vhn_giamgias')->get();
+            return view('admincp.hoadonscs.edit',compact('products','congnos','hoadonsc','hdsanphams','hdkiemtras','hdsuachuas','hdgiamgias'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error','Error!');
         }
@@ -116,7 +119,7 @@ class VhnHoadonScController extends Controller
             $products = DB::table('vhn_products')->get();
             $hoadonsc = DB::table('vhn_hoadon_scs')->where('id',$id)->first();
             $hdsanphams = DB::table('vhn_hd_sanphams')->where([['id_hd',$id],['id_type','sc']])->get();
-            $hdkiemtras = DB::table('vhn_hd_kiemtras')->where('id_hd',$id)->get(); //dd($hdkiemtras);
+            $hdkiemtras = DB::table('vhn_hd_kiemtras')->where('id_hd',$id)->get();
             $hdsuachuas = DB::table('vhn_hd_suachuas')->where('id_hd',$id)->get();
             return view('admincp.hoadonscs.show',compact('products','hoadonsc','hdsanphams','hdkiemtras','hdsuachuas'));
         } catch (\Throwable $th) {
@@ -221,7 +224,8 @@ class VhnHoadonScController extends Controller
                         'quantity' => $item['quantity'],
                         'price' => $product->price_sale,
                         'total' => $item['quantity'] * $product->price_sale,
-                        'warranty' => $item['warranty']
+                        'warranty' => $item['warranty'],
+                        'giamgia' => $item['giamgia']
                     ]);
                 }
             }

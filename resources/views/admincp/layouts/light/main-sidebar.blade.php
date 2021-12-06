@@ -104,6 +104,12 @@
                         <p>Công nợ</p>
                     </a>
                 </li>
+                 <li class="nav-item">
+                    <a href="giamgias" class="nav-link">
+                        <i class="fas fa-receipt"></i>
+                        <p>Giảm giá</p>
+                    </a>
+                </li>
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

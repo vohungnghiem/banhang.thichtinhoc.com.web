@@ -166,7 +166,7 @@
                                         <div id="products">
                                             @foreach ($hdsanphams as $i => $sp)
                                                 <div class="row btn-row">
-                                                    <div class="form-group col-lg-6">
+                                                    <div class="form-group col-lg-5">
                                                         <div class="input-group">
                                                             <div class="input-group-prepend"> <span class="input-group-text">Sản phẩm</span> </div>
                                                             <select name="hd_sanpham[{{$i}}][id]" class="form-control  sanpham ">
@@ -191,7 +191,17 @@
                                                             <input type="number" name="hd_sanpham[{{$i}}][warranty]" value="{{$sp->warranty}}" class="form-control warranty" >
                                                         </div>
                                                     </div>
-                                                    <div class="form-group col-lg-2 ">
+                                                    <div class="form-group col-lg-2">
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend"> <span class="input-group-text">Giảm giá</span> </div>
+                                                            <select name="hd_sanpham[{{$i}}][giamgia]" class="form-control select2bs4">
+                                                                @foreach ($hdgiamgias as $item)
+                                                                    <option value="{{$item->code}}" @if ($sp->giamgia == $item->code) selected @endif>{{$item->code}} ({{number_format($item->giamgia)}})</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-lg-1 ">
                                                         <div class="input-group">
                                                             <div class="input-group-prepend"> <span class="input-group-text">Xóa</span> </div>
                                                             <div class="btn btn-danger btn-remove"><i class="fas fa-trash-alt"></i></div>
@@ -277,7 +287,7 @@ $("#but_congno").on("click", function() {
     $(document).on('click', '.btn-sanpham', function(event) {
         var html = '';
         html += '<div class="row btn-row">'+
-            '<div class="form-group col-lg-6">'+
+            '<div class="form-group col-lg-5">'+
                 '<div class="input-group">'+
                     '<div class="input-group-prepend"> <span class="input-group-text">Sản phẩm</span> </div>'+
                     '<select name="hd_sanpham['+count+'][id]" class="form-control  sanpham select2bs4">'+
@@ -300,7 +310,17 @@ $("#but_congno").on("click", function() {
                     '<input type="number" name="hd_sanpham['+count+'][warranty]" value="36" class="form-control warranty" >'+
                 '</div>'+
             '</div>'+
-            '<div class="form-group col-lg-2">'+
+            ' <div class="form-group col-lg-2">'+
+                    '<div class="input-group">'+
+                        '<div class="input-group-prepend"> <span class="input-group-text">Giảm giá</span> </div>'+
+                        '<select name="hd_sanpham['+count+'][giamgia]" class="form-control select2bs4">'+
+                            '@foreach ($hdgiamgias as $item)'+
+                            '<option value="{{$item->code}}">{{$item->code}} ({{number_format($item->giamgia)}})</option>'+
+                            '@endforeach'+
+                        '</select>'+
+                    '</div>'+
+                '</div>'+
+            '<div class="form-group col-lg-1">'+
                 '<div class="input-group">'+
                     '<div class="input-group-prepend"> <span class="input-group-text">Xóa</span> </div>'+
                     '<div class="btn btn-danger btn-remove"><i class="fas fa-trash-alt"></i></div>'+
@@ -308,6 +328,7 @@ $("#but_congno").on("click", function() {
             '</div>'+
         '</div>';
         $('#products').append(html);
+        $(".select2bs4").select2({ });
         selectRefresh();
         ++count;
     });

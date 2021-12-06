@@ -11,7 +11,7 @@ function datevnfull($date)
 {
     return date('d',strtotime($date)). ' tháng '. date('m',strtotime($date)). ' năm ' .	date('Y',strtotime($date));
 }
-function baohanh($item) 
+function baohanh($item)
 {
     $date1= date_create($item->date_import);
     $date2= date_create(date('d-m-Y'));
@@ -26,6 +26,16 @@ function is_invalid($date)
     }else{
         return '';
     }
+}
+
+function generateRandomString($length = 10) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
 }
 
 function storage_link($thumb,$date) {
