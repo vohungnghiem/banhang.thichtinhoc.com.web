@@ -30,13 +30,15 @@
                                         <tr class="bg-secondary">
                                             <td colspan="3">{{datevn($item->thoigian)}} (MHĐ:{{sprintf("%06d", $item->mahoadon)}}) - Tên khách: {{$item->tenkh}}</td>
                                         </tr>
-                                            @foreach (explode(",", $item->congno) as $key => $itemsc)
-                                                <tr>
-                                                    <td>{{++$key}}</td>
-                                                    <td>{{explode("-", $itemsc)[0]}}</td>
-                                                    <td class="font-weight-bold">{{number_format(explode("-", $itemsc)[1])}}</td>
-                                                </tr>
-                                            @endforeach
+                                            @if ($item->congno)
+                                                @foreach (explode(",", $item->congno) as $key => $itemsc)
+                                                    <tr>
+                                                        <td>{{++$key}}</td>
+                                                        <td>{{explode("-", $itemsc)[0]}}</td>
+                                                        <td class="font-weight-bold">{{number_format(explode("-", $itemsc)[1])}}</td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
                                             @if ($item->congnosp)
                                                 @foreach (explode(",", $item->congnosp) as $key => $itemsp)
                                                     @if (explode("-", $itemsp)[2] == 'sc')

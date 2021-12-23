@@ -121,7 +121,11 @@ class VhnHoadonScController extends Controller
             $hdsanphams = DB::table('vhn_hd_sanphams')->where([['id_hd',$id],['id_type','sc']])->get();
             $hdkiemtras = DB::table('vhn_hd_kiemtras')->where('id_hd',$id)->get();
             $hdsuachuas = DB::table('vhn_hd_suachuas')->where('id_hd',$id)->get();
-            return view('admincp.hoadonscs.show',compact('products','hoadonsc','hdsanphams','hdkiemtras','hdsuachuas'));
+            $hdgiamgias = DB::table('vhn_giamgias')
+                ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.giamgia','=','vhn_giamgias.code')
+                ->where([['id_hd',$id],['id_type','sc']])->sum('vhn_giamgias.giamgia');
+            // dd($hdgiamgias);
+            return view('admincp.hoadonscs.show',compact('products','hoadonsc','hdsanphams','hdkiemtras','hdsuachuas','hdgiamgias'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error','Error!');
         }

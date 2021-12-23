@@ -117,8 +117,11 @@
                                                 @endforeach
                                             @endif
                                             <tr>
-                                                <td colspan="6"><strong>Chi phí sửa chữa (Tổng @for ($i = 1; $i <= $so; $i++) {{$i}} , @endfor):
-                                                    {{number_format($hdsuachuas->sum('price') + $hdsuachuas->sum('fee') + $hdsanphams->sum('total'))}}đ</strong>
+                                                @php
+                                                    $tong = $hdsuachuas->sum('price') + $hdsuachuas->sum('fee') + $hdsanphams->sum('total');
+                                                @endphp
+                                                <td colspan="6">Chi phí sửa chữa (Tổng @for ($i = 1; $i <= $so; $i++) {{$i}} , @endfor):
+                                                    {{number_format($tong)}}đ ; Giảm giá: {{number_format($hdgiamgias)}}đ ;<strong> Còn lại: {{number_format($tong - $hdgiamgias)}}đ</strong>
                                                 </td>
                                             </tr>
                                             <tr>

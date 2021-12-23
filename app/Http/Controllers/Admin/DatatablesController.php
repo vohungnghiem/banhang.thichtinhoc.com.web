@@ -265,6 +265,7 @@ class DatatablesController extends Controller
             ->leftJoin('vhn_hd_kiemtras','vhn_hd_kiemtras.id_hd','=','vhn_hoadon_scs.id')
             ->leftJoin('vhn_hd_suachuas','vhn_hd_suachuas.id_hd','=','vhn_hoadon_scs.id')
             ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_scs.id')
+            ->leftjoin('vhn_giamgias','vhn_giamgias.code','=','vhn_hd_sanphams.giamgia')
             // ->leftJoin('vhn_suppliers','vhn_hd_suachuas.id_congno','=','vhn_suppliers.id')
             ->select(
                 'vhn_hoadon_scs.*','vhn_hd_kiemtras.name',
@@ -274,6 +275,7 @@ class DatatablesController extends Controller
                 DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_sanphams.stt ,'-' , vhn_hd_sanphams.total , '-', vhn_hd_sanphams.id_type) as congnosp"),
                 DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_suachuas.stt , '-' , vhn_hd_suachuas.price, '-' , vhn_hd_suachuas.id_hd ) as congnosc"),
                 DB::raw("GROUP_CONCAT(DISTINCT CASE WHEN (vhn_hoadon_scs.id_congno > 0) AND (vhn_hoadon_scs.ngay_congno IS NULL) THEN vhn_hoadon_scs.tenkh ELSE NULL END , '*' ) as congno"),
+                DB::raw("GROUP_CONCAT(vhn_giamgias.giamgia) as giamgia"),
             )
             ->groupBy('vhn_hoadon_scs.id')
             ->orderBy('vhn_hoadon_scs.id','desc')->get();
@@ -308,6 +310,7 @@ class DatatablesController extends Controller
             // return number_format($item->totalsc) . ' + ' . number_format($totalsp);
             $congnosc = 0;
             $congnosp = 0;
+            $giamgia = 0;
             if ($item->congnosc) {
                 foreach (explode(",", $item->congnosc) as $key => $itemsc) {
                     $congnosc += explode("-", $itemsc)[1];
@@ -320,7 +323,13 @@ class DatatablesController extends Controller
                     }
                 }
             }
-            return number_format($congnosc) .' + '. number_format($congnosp) ;
+            if ($item->giamgia) {
+                foreach (explode(",", $item->giamgia) as $key => $itemgg) {
+                    $giamgia +=$itemgg;
+                }
+            }
+            // $giamgia = $item->giamgia;
+            return number_format($congnosc) .' + '. number_format($congnosp - $giamgia) . '('.  number_format($giamgia).')' ;
         });
         $datatables->editColumn('congno', function ($item) {
             if (isset($item->congno)) {
