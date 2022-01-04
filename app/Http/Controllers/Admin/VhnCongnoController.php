@@ -13,6 +13,7 @@ class VhnCongnoController extends Controller
             ->join('vhn_hoadon_scs','vhn_hoadon_scs.id_congno','=','vhn_congnos.id')
             ->leftJoin('vhn_hd_suachuas','vhn_hd_suachuas.id_hd','=','vhn_hoadon_scs.id')
             ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_scs.id')
+            ->leftjoin('vhn_giamgias','vhn_giamgias.code','=','vhn_hd_sanphams.giamgia')
             // ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_type','=','vhn_hoadon_scs.id_sp')
             ->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.status','>=',4]])
             ->distinct()
@@ -20,8 +21,9 @@ class VhnCongnoController extends Controller
                 'vhn_congnos.*',
                 'vhn_hoadon_scs.ngay_congno',
                 DB::raw("(CASE WHEN vhn_hoadon_scs.ngay_congno IS NULL THEN 0 ELSE 1 END ) AS ngaynull"),
-                DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_sanphams.stt ,'-' , vhn_hd_sanphams.total , '-', vhn_hd_sanphams.id_type) as congnosp"),
+                DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_sanphams.id_hd,'_',vhn_hd_sanphams.stt,'-' , vhn_hd_sanphams.total , '-', vhn_hd_sanphams.id_type) as congnosp"),
                 DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_suachuas.stt , '-' , vhn_hd_suachuas.price, '-' , vhn_hd_suachuas.id_hd ) as congno"),
+                DB::raw("GROUP_CONCAT(vhn_giamgias.giamgia) as giamgia"),
             )
             ->groupBy('vhn_congnos.id','vhn_hoadon_scs.ngay_congno')
             ->orderBy('ngaynull','asc')
@@ -39,19 +41,18 @@ class VhnCongnoController extends Controller
             ->leftJoin('vhn_hoadon_scs','vhn_hoadon_scs.id_congno','=','vhn_congnos.id')
             ->leftJoin('vhn_hd_suachuas','vhn_hd_suachuas.id_hd','=','vhn_hoadon_scs.id')
             ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_scs.id')
+            ->leftjoin('vhn_giamgias','vhn_giamgias.code','=','vhn_hd_sanphams.giamgia')
             ->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.status','>=',4],['vhn_hoadon_scs.ngay_congno',$date]])
             ->where('vhn_congnos.id',$id)
             ->select(
-                // 'vhn_congnos.*',
                 'vhn_hoadon_scs.thoigian',
                 'vhn_hoadon_scs.tenkh',
                 'vhn_hoadon_scs.mahoadon',
                 DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_suachuas.name , '-' , vhn_hd_suachuas.price) as congno"),
-                // DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_sanphams.name , '-' , vhn_hd_sanphams.total) as namesp"),
-                // DB::raw("SUM( CASE WHEN vhn_hd_sanphams.total IS NOT NULL AND vhn_hd_sanphams.id_type = 'sc' THEN (vhn_hd_suachuas.price + vhn_hd_sanphams.total) ELSE vhn_hd_suachuas.price END ) as congno"),
                 DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_sanphams.stt ,'-' , vhn_hd_sanphams.total , '-', vhn_hd_sanphams.id_type, '-', vhn_hd_sanphams.name) as congnosp"),
+                DB::raw("GROUP_CONCAT(DISTINCT vhn_giamgias.giamgia) as giamgia"),
             )
-            ->groupBy('vhn_hoadon_scs.id','vhn_hoadon_scs.thoigian')
+            ->groupBy('vhn_hoadon_scs.id','vhn_hoadon_scs.thoigian','vhn_giamgias.giamgia')
             ->get();
             // dd($listscs);
             $congno = DB::table('vhn_congnos')->where('id',$id)->first();

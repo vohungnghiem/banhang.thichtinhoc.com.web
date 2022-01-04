@@ -32,7 +32,7 @@ class HomeController extends Controller
             ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_pros.id')
             ->leftJoin('vhn_products','vhn_products.id','=','vhn_hd_sanphams.id_sp')
             // ->leftJoin('vhn_giamgias','vhn_giamgias.code','=','vhn_hd_sanphams.giamgia')
-            ->whereYear('thoigian',$year)
+            // ->whereYear('thoigian',$year)
             ->where('vhn_hd_sanphams.id_type','pro')
             ->sum(DB::raw('vhn_hd_sanphams.total - (vhn_hd_sanphams.quantity * vhn_products.price_import)'));
         $loinhuan_bansp = $loinhuan_bansp * (100 - $setpercent->value) / 100;
@@ -40,7 +40,7 @@ class HomeController extends Controller
             ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_scs.id')
             ->leftJoin('vhn_products','vhn_products.id','=','vhn_hd_sanphams.id_sp')
             ->leftJoin('vhn_giamgias','vhn_giamgias.code','=','vhn_hd_sanphams.giamgia')
-            ->whereYear('thoigian',$year)
+            // ->whereYear('thoigian',$year)
             ->where('vhn_hd_sanphams.id_type','sc')
             ->where('vhn_hoadon_scs.status','>=',4)
             ->where(function($q) {

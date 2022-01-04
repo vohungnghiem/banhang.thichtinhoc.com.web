@@ -37,7 +37,7 @@
                                             <td>{{$item->name}}</td>
                                             <td>
                                                 @php
-                                                    $congnosc = 0; $congnosp = 0;
+                                                    $congnosc = 0; $congnosp = 0; $giamgia = 0;
                                                     if ($item->congno) {
                                                         foreach (explode(",", $item->congno) as $key => $itemcn) {
                                                             $congnosc += explode("-", $itemcn)[1];
@@ -50,9 +50,13 @@
                                                             }
                                                         }
                                                     }
+                                                    if ($item->giamgia) {
+                                                        foreach (explode(",", $item->giamgia) as $key => $itemgg) {
+                                                            $giamgia +=$itemgg;
+                                                        }
+                                                    }
                                                 @endphp
-
-                                                {{number_format($congnosc + $congnosp)}}
+                                                <strong>{{number_format($congnosc + $congnosp - $giamgia)}}đ</strong> (giảm: {{number_format($giamgia)}}đ)
                                             </td>
                                             @if ($item->ngay_congno != null)
                                                 <td>{{ datevn($item->ngay_congno) }}</td>

@@ -35,7 +35,7 @@
                                                     <tr>
                                                         <td>{{++$key}}</td>
                                                         <td>{{explode("-", $itemsc)[0]}}</td>
-                                                        <td class="font-weight-bold">{{number_format(explode("-", $itemsc)[1])}}</td>
+                                                        <td class="font-weight-bold">{{number_format(explode("-", $itemsc)[1])}}đ</td>
                                                     </tr>
                                                 @endforeach
                                             @endif
@@ -45,7 +45,12 @@
                                                         <tr>
                                                             <td>{{++$key}}</td>
                                                             <td>(++) {{explode("-", $itemsp)[3]}}</td>
-                                                            <td class="font-weight-bold">{{number_format(explode("-", $itemsp)[1])}}</td>
+                                                            <td >
+                                                                <div class="font-weight-bold">{{number_format(explode("-", $itemsp)[1] - $item->giamgia) }}đ</div>
+                                                                @if ($item->giamgia == 0)
+                                                                    (Giảm giá: {{number_format($item->giamgia)}}đ)
+                                                                @endif
+                                                            </td>
                                                         </tr>
                                                     @endif
                                                 @endforeach
@@ -53,11 +58,12 @@
                                         @endforeach
                                         <tr>
                                             <td class="font-weight-bold text-right text-danger pr-5" colspan="2">Tổng tiền:</td>
-                                            <td class="font-weight-bold text-danger">
-                                                @php $tongcongno = 0; @endphp
+                                            <td class="text-danger">
+                                                @php $tongcongno = 0; $tonggiamgia = 0; @endphp
+
                                                 @foreach($listscs as $key => $item)
                                                     @php
-                                                        $congnosc = 0; $congnosp = 0;
+                                                        $congnosc = 0; $congnosp = 0; $giamgia = 0;
                                                         if ($item->congno) {
                                                             foreach (explode(",", $item->congno) as $key => $itemcn) {
                                                                 $congnosc += explode("-", $itemcn)[1];
@@ -70,10 +76,17 @@
                                                                 }
                                                             }
                                                         }
-                                                       $tongcongno += ($congnosc + $congnosp);
+                                                        if ($item->giamgia) {
+                                                            foreach (explode(",", $item->giamgia) as $key => $itemgg) {
+                                                                $giamgia +=$itemgg;
+                                                            }
+                                                        }
+                                                        $tongcongno += ($congnosc + $congnosp - $giamgia);
+                                                        $tonggiamgia += $giamgia;
                                                     @endphp
+
                                                 @endforeach
-                                                {{number_format($tongcongno)}}
+                                                <strong>{{number_format($tongcongno)}}đ</strong> <br> (giảm: {{number_format($tonggiamgia)}}đ)
                                             </td>
                                         </tr>
                                     </tbody>
