@@ -58,6 +58,7 @@ class VhnHoadonScController extends Controller
                         $quantity = $product->quantity - $item['quantity'];
                         DB::table('vhn_products')->where('id', $item['id'])->update(['quantity' => $quantity]);
                     }
+                    $gianhap = $item['gianhap'] ? str_replace([' ',',','_'], '', $item['gianhap']) : 0;// giá nhập
                     DB::table('vhn_hd_sanphams')->insert([
                         'id_hd' => $id,
                         'id_type' => 'sc',
@@ -65,8 +66,10 @@ class VhnHoadonScController extends Controller
                         'id_sp' => $product->id,
                         'name' => $product->name,
                         'quantity' => $item['quantity'],
-                        'price' => $product->price_sale,
-                        'total' => $item['quantity'] * $product->price_sale,
+                        // 'price' => $product->price_sale,
+                        // 'total' => $item['quantity'] * $product->price_sale,
+                        'price' => $gianhap,
+                        'total' => $item['quantity'] * $gianhap,
                         'warranty' => $item['warranty'],
                         'giamgia' => $item['giamgia']
                     ]);
@@ -219,6 +222,7 @@ class VhnHoadonScController extends Controller
                         $quantity = $product->quantity - $item['quantity'];
                         DB::table('vhn_products')->where('id', $item['id'])->update(['quantity' => $quantity]);
                     }
+                    $gianhap = $item['gianhap'] ? str_replace([' ',',','_'], '', $item['gianhap']) : 0;// giá nhập
                     DB::table('vhn_hd_sanphams')->insert([
                         'id_hd' => $id,
                         'id_type' => 'sc',
@@ -226,8 +230,10 @@ class VhnHoadonScController extends Controller
                         'id_sp' => $product->id,
                         'name' => $product->name,
                         'quantity' => $item['quantity'],
-                        'price' => $product->price_sale,
-                        'total' => $item['quantity'] * $product->price_sale,
+                        // 'price' => $product->price_sale,
+                        // 'total' => $item['quantity'] * $product->price_sale,
+                        'price' => $gianhap,
+                        'total' => $item['quantity'] * $gianhap,
                         'warranty' => $item['warranty'],
                         'giamgia' => $item['giamgia']
                     ]);

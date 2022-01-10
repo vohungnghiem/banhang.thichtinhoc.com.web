@@ -57,11 +57,17 @@
                                                         <select name="hd_sanpham[{{$i}}][id]" class="form-control  sanpham ">
                                                             @foreach ($products as $item)
                                                                 <option value="{{$item->id}}" data-image="{{storage_link_show('product',$item->created_at).$item->image}}?v={{time()}}">
-                                                                    {{$item->name}} (sp: {{$item->quantity}} ) (giá: {{number_format($item->price_sale)}}) {{baohanh($item)}}
+                                                                    {{$item->name}} (sp: {{$item->quantity}} )  {{baohanh($item)}}
                                                                 </option>
                                                             @endforeach
                                                             <option value="0" data-image="logo/logo.png">Không chọn</option>
                                                         </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-3">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend"> <span class="input-group-text">Giá nhập</span> </div>
+                                                        <input type="text" name="hd_sanpham[{{$i}}][gianhap]" value="000" class="form-control number" >
                                                     </div>
                                                 </div>
                                                 <div class="form-group col-lg-2">
@@ -160,6 +166,12 @@
                         '</select>'+
                     '</div>'+
                 '</div>'+
+                '<div class="form-group col-lg-3">'+
+                    '<div class="input-group">'+
+                        '<div class="input-group-prepend"> <span class="input-group-text">Giá nhập</span> </div>'+
+                        '<input type="text" name="hd_sanpham['+count+'][gianhap]" value="000" class="form-control number" >'+
+                    '</div>'+
+                '</div>'+
                 '<div class="form-group col-lg-2">'+
                     '<div class="input-group">'+
                         '<div class="input-group-prepend"> <span class="input-group-text">Số lượng</span> </div>'+
@@ -192,6 +204,7 @@
             $('#products').append(html);
             selectRefresh();
             $(".select2bs4").select2({});
+            $('.number').inputmask('999,999,999', { numericInput: true });
             ++count;
         });
         $(document).on('click','.btn-remove',function(event){

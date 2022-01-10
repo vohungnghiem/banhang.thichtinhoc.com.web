@@ -92,7 +92,7 @@ class DatatablesController extends Controller
         $item = DB::table('vhn_products')->orderBy('id','desc');
         $datatables = DataTables::of($item);
         $datatables->editColumn('price_sale', function ($item) {
-            return number_format($item->price_sale);
+            return '___'; //number_format($item->price_sale);
         });
         $datatables->editColumn('price_import', function ($item) {
             return number_format($item->price_import);
