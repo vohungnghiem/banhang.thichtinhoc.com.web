@@ -60,6 +60,11 @@ class VhnProductController extends Controller
         try {
             $product = Product::find($id);
             $product->name = $request->name;
+            if ($product->quantity != $request->quantity) {
+                DB::table('vhn_logsps')->insert(
+                    ['id_pro' => $id, 'socu' => $product->quantity,'somoi'=>$request->quantity,'ngaytao'=>date('Y-m-d')]
+                );
+            }
             $product->quantity = $request->quantity;
             $product->price_sale = $request->price_sale ? str_replace([' ',',','_'], '', $request->price_sale) : 0;
             $product->price_import = $request->price_sale ? str_replace([' ',',','_'], '', $request->price_import) : 0;
@@ -130,6 +135,29 @@ class VhnProductController extends Controller
             $product->delete();
             return response()->json('success');
 
+        } catch (\Throwable $th) {
+            return response()->json('error');
+        }
+
+    }
+    public function viewhd(Request $request)
+    {
+        try {
+            $ds = DB::table('vhn_hd_sanphams')
+                ->leftJoin('vhn_hoadon_pros', function($join)
+                {
+                    $join->on('vhn_hoadon_pros.id', '=', 'vhn_hd_sanphams.id_hd');
+                    $join->where('vhn_hd_sanphams.id_type','=', 'pro');
+                })
+                ->leftJoin('vhn_hoadon_scs', function($joinn)
+                {
+                    $joinn->on('vhn_hoadon_scs.id', '=', 'vhn_hd_sanphams.id_hd');
+                    $joinn->where('vhn_hd_sanphams.id_type','=', 'sc');
+                })
+                ->where('vhn_hd_sanphams.id_sp','=',$request->id)
+                ->select('vhn_hd_sanphams.*','vhn_hoadon_pros.mahoadon as mahoadonpro','vhn_hoadon_scs.mahoadon as mahoadonsc')
+                ->get();
+            return response()->json($ds);
         } catch (\Throwable $th) {
             return response()->json('error');
         }

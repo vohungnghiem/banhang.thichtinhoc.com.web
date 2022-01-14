@@ -12,7 +12,7 @@ class VhnHoadonScController extends Controller
         return view('admincp.hoadonscs.index',compact('hoadonscs'));
     }
     public function create() {
-        $products = DB::table('vhn_products')->get();
+        $products = DB::table('vhn_products')->where('quantity','>',0)->get();
         $congnos = DB::table('vhn_congnos')->get();
         $hdgiamgias = DB::table('vhn_giamgias')->get();
         return view('admincp.hoadonscs.create',compact('products','congnos','hdgiamgias'));
@@ -105,7 +105,19 @@ class VhnHoadonScController extends Controller
     }
     public function edit($id) {
         try {
-            $products = DB::table('vhn_products')->get();
+            $checked = DB::table('vhn_hd_sanphams')->where([['id_hd',$id],['id_type','sc']])->pluck("id_sp")->toArray();
+		    $arrchecked = implode(",",$checked);
+            $products = DB::table('vhn_products')
+                // ->where('quantity','>',0)
+                ->select(
+                    'vhn_products.*',
+                    DB::raw(' (CASE
+                        WHEN FIND_IN_SET(vhn_products.id, "'.$arrchecked.'") THEN "3"
+                        WHEN vhn_products.quantity  > 0 THEN "2"
+                        ELSE "0"
+                    END) AS has_dt')
+                )
+                ->get(); //kiểm tra sản phẩm còn hàng
             $congnos = DB::table('vhn_congnos')->get();
             $hoadonsc = DB::table('vhn_hoadon_scs')->where('id',$id)->first();
             $hdsanphams = DB::table('vhn_hd_sanphams')->where([['id_hd',$id],['id_type','sc']])->get();

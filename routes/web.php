@@ -102,6 +102,7 @@ Route::group(['middleware' => 'auth','namespace' => 'App\Http\Controllers\Admin'
         Route::post('remove_img','VhnProductController@remove_img');
         Route::post('remove_img_location','VhnProductController@remove_img_location');
         Route::post('destroy', 'VhnProductController@destroy');
+        Route::post('viewhd', 'VhnProductController@viewhd');
     });
 
     Route::group(['prefix' => 'phieus'],function(){

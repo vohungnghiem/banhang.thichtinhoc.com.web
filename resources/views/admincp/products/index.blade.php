@@ -35,6 +35,29 @@
                                     </thead>
                                 </table>
                             </div>
+                            <div class="card-body">
+                                {{-- <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target=".flipFlop">
+                                    Click Me
+                                </button> --}}
+                                <div class="modal fade flipFlop" id="" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-md" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title" id="modalLabel">Danh sách bán</h4>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body" id="taone">
+                                                A type of open-toed sandal.
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -42,6 +65,7 @@
         </section>
 
     </div>
+
 
 @endsection
 @push('css')
@@ -116,12 +140,46 @@
                 },
             });
         });
-
-
     </script>
     <script>
         status('products');
         sort('products');
         destroy('products');
+    </script>
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        function zeroPad(num, places) {
+            var zero = places - num.toString().length + 1;
+            return Array(+(zero > 0 && zero)).join("0") + num;
+        }
+        $("#myTable").on('mouseover', '.btn-viewhd', function(e) {
+            var id = $(this).attr('data-id');
+            var _token = $('meta[name="csrf-token"]').attr('content');
+                $.ajax({
+                    url: '/products/viewhd',
+                    type: 'POST',
+                    data: { _token: _token, id: id },
+                    success: function success(data) {
+                        console.log(data);
+                        var a = '',b;
+                        data.forEach(function(ele) {
+                            if (ele.id_type == 'pro') {
+                                b = '<a href="hoadonpros/edit/'+ele.id_hd+'">ID_HDSP:'+zeroPad(ele.mahoadonpro, 6)+'</a>';
+                            }else{
+                                b = '<a href="hoadonscs/edit/'+ele.id_hd+'">ID_HDSC:'+zeroPad(ele.mahoadonsc, 6)+'</a>';
+                            }
+                            c = ele.price;
+                            d = ele.quantity;
+                            a +=  ele.name + '___' + 'HD: ' + b + ' | Giá bán: ' + c + ' | Số lượng: ' + d + '<br>';
+                        });
+                        $('#taone').empty();
+                        $('#taone').append("<p>"+a+"</p>");
+                    }
+                });
+        });
     </script>
 @endpush

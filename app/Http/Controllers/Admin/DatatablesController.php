@@ -89,7 +89,11 @@ class DatatablesController extends Controller
     }
 
     public function product() {
-        $item = DB::table('vhn_products')->orderBy('id','desc');
+        $item = DB::table('vhn_products')
+            ->leftJoin('vhn_logsps','vhn_products.id','=','vhn_logsps.id_pro')
+            ->select('vhn_products.*',DB::raw("GROUP_CONCAT(DISTINCT vhn_logsps.socu,'_',vhn_logsps.somoi,'_',vhn_logsps.ngaytao ORDER BY vhn_logsps.ngaytao DESC) as totalsp"))
+            ->groupBy('vhn_products.id')
+            ->orderBy('vhn_products.id','desc');
         $datatables = DataTables::of($item);
         $datatables->editColumn('price_sale', function ($item) {
             return '___'; //number_format($item->price_sale);
@@ -126,13 +130,24 @@ class DatatablesController extends Controller
             return $result;
         });
         $datatables->addColumn('action', function ($item) {
-            $result = ''; $edit = ''; $delete = '';
+            $result = ''; $edit = ''; $delete = ''; $viewhd = ''; $log = '';
+            $viewhd = '<button class="btn btn-warning btn-xs btn-viewhd" data-id="'.$item->id.'" data-toggle="modal" data-target=".flipFlop"><i class="fas fa-eye"></i> </button>  &nbsp; ';
             $edit = '<a href="products/edit/'.$item->id.'" class="btn btn-xs btn-primary" data-toggle="tooltip" title="'.__('admin.update_info').'">
                 <i class="fas fa-pen-nib"></i>
             </a> ';
             $delete = '<div class="btn btn-xs btn-danger btn-destroy" data-id="'.$item->id.'" data-toggle="tooltip" title="'.__('admin.delete_info').'"  >
             <i class="fas fa-trash-alt"></i></div> ';
-            $result .= $edit . $delete;
+            $totalsp = '';
+            if ($item->totalsp) {
+
+                foreach (explode(",",$item->totalsp) as $itemsp) {
+                    $assp = explode("_", $itemsp);
+                    $totalsp .= '*** số mới:'.$assp[1] . ' | số cũ:'.$assp[0] . ' | ngày:'.date_format(date_create($assp[2]),"d-m-Y") .'<br>';
+                }
+            }
+            $log = '<div class="btn btn-xs btn-dark " data-id="'.$item->id.'" data-html="true" data-toggle="tooltip" title="'.$totalsp.'"  >
+            <i class="fas fa-blog"></i></div> ';
+            $result .= $viewhd . $edit . $delete . $log;
             return $result;
         });
         $datatables->rawColumns(['price_sale','price_import','date_import','image','baohanh','status','action']);
