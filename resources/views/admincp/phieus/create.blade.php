@@ -65,6 +65,14 @@
                                                     <input type="text" name="date_import" value="{{date('d-m-Y')}}" class="form-control datemask" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" data-mask >
                                                 </div>
                                             </div>
+                                            <div class="form-group col-lg-6">
+                                                <label> phiếu rút </label>
+                                                <select name="idrut" class="form-control">
+                                                    <option value="0">Không</option>
+                                                    <option value="1">Sửa chửa</option>
+                                                    <option value="2">Bán hàng</option>
+                                                </select>
+                                            </div>
                                         </div>
                                         {{-- <div class="form-group">
                                             <label> Sắp xếp </label>

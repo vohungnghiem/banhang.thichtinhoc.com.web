@@ -93,7 +93,7 @@
                                                 <div class="row btn-row">
                                                     <div class="form-group col-lg-5">
                                                         <label>Tên thiết bị</label>
-                                                        <input type="text" name="dh_kiemtra[{{$j}}][name]" value="{{old('name')}}" class="form-control " >
+                                                        <input type="text" name="dh_kiemtra[{{$j}}][name]" value="{{old('name')}}" class="form-control " required >
                                                     </div>
                                                     <div class="form-group col-lg-2">
                                                         <label>Bệnh trạng</label>
@@ -127,7 +127,7 @@
                                                     <div class="form-group col-lg-6">
                                                         <div class="input-group">
                                                             <div class="input-group-prepend"> <span class="input-group-text">Tên thiết bị</span> </div>
-                                                            <input type="text" name="dh_suachua[{{$k}}][name]" value="{{old('name')}}" class="form-control " >
+                                                            <input type="text" name="dh_suachua[{{$k}}][name]" value="{{old('name')}}" class="form-control " required>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-lg-2">
@@ -158,10 +158,12 @@
                                             <label> Tình trạng </label>
                                             <div class="form-group clearfix">
                                                 @foreach (tinhtrangs() as $item)
+                                                @if ($item->id < 4)
                                                     <div class="icheck-primary d-inline mr-2">
                                                         <input type="radio" id="t{{$item->id}}" name="status" value="{{$item->id}}" @if ($item->id == 1) checked @endif>
                                                         <label for="t{{$item->id}}">{{$item->name}}</label>
                                                     </div>
+                                                @endif
                                                 @endforeach
                                             </div>
                                         </div>
@@ -288,7 +290,7 @@ $("#but_congno").on("click", function() {
         html += '<div class="row btn-row">'+
             '<div class="form-group col-lg-5">'+
                 '<label>Tên thiết bị</label>'+
-                '<input type="text" name="dh_kiemtra['+count_kt+'][name]" class="form-control " >'+
+                '<input type="text" name="dh_kiemtra['+count_kt+'][name]" class="form-control " required>'+
             '</div>'+
             '<div class="form-group col-lg-2">'+
                 '<label>Bệnh trạng</label>'+
@@ -321,7 +323,7 @@ $("#but_congno").on("click", function() {
             '<div class="form-group col-lg-6">'+
                 '<div class="input-group">'+
                     '<div class="input-group-prepend"> <span class="input-group-text">Tên thiết bị</span> </div>'+
-                    '<input type="text" name="dh_suachua['+count_sc+'][name]" class="form-control " >'+
+                    '<input type="text" name="dh_suachua['+count_sc+'][name]" class="form-control " required>'+
                 '</div>'+
             '</div>'+
             '<div class="form-group col-lg-2">'+

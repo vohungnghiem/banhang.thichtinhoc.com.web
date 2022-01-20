@@ -73,11 +73,15 @@
                                                     <input type="text" name="date_import" value="{{datevn($phieu->date_import)}}" class="form-control datemask" data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" data-mask >
                                                 </div>
                                             </div>
+                                            <div class="form-group col-lg-6">
+                                                <label> phiếu rút </label>
+                                                <select name="idrut" class="form-control">
+                                                    <option value="0" @if ($phieu->idrut == 0) selected @endif>Không</option>
+                                                    <option value="1" @if ($phieu->idrut == 1) selected @endif>Sửa chửa</option>
+                                                    <option value="2" @if ($phieu->idrut == 2) selected @endif>Bán hàng</option>
+                                                </select>
+                                            </div>
                                         </div>
-                                        {{-- <div class="form-group">
-                                            <label> Sắp xếp </label>
-                                            <input type="number" name="sort" value="{{$phieu->sort}}" class="form-control form-control-sm" style="width: 160px" placeholder="Sắp xếp">
-                                        </div> --}}
                                         <div class="form-group" style="display: none">
                                             <label> {{__('admin.status')}}</label>
                                             <input type="checkbox" name="status" @if ($phieu->status == 1) checked @endif data-bootstrap-switch data-off-color="danger" data-on-color="primary">

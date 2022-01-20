@@ -47,17 +47,17 @@
                             </div>
                         </div>
                         <div class="col-lg-3 col-6">
-                            <div class="small-box bg-danger">
-                                <div class="inner">
-                                    <h4>{{ number_format($tongloinhuan) }}</h4>
-                                    <p>Lợi nhuận (năm {{$year}}) </p>
-                                    {{-- chưa phí sửa chửa, ktra ==> --}}
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-pie-graph"></i>
-                                </div>
-                                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <div class="info-box bg-danger">
+                            <span class="info-box-icon"><i class="fas fa-comments"></i></span>
+
+                            <div class="info-box-content">
+                              <span class="info-box-text">Lợi nhuận sửa chữa (năm {{$year}}) </span>
+                              <span class="info-box-number">{{ number_format($tongloinhuan - $phieurutsc) }}</span>
+                              <span class="info-box-text">Lợi nhuận bán hàng (năm {{$year}})</span>
+                              <span class="info-box-number">{{ number_format($tongloinhuanbanhang - $phieurutbh) }}</span>
                             </div>
+                            <!-- /.info-box-content -->
+                          </div>
                         </div>
                         <div class="col-lg-3 col-6">
                             <div class="small-box bg-dark">
@@ -76,6 +76,30 @@
                                 <div class="inner">
                                     <h4>{{ number_format($phieuthu) }}</h4>
                                     <p>Phiếu thu</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-pie-graph"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-6">
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h4>{{ number_format($phieuchi) }}</h4>
+                                    <p>Phiếu chi </p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-pie-graph"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-6">
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h4>{{ number_format($phieurut) }}</h4>
+                                    <p>Phiếu rút (năm {{$year}})</p>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-pie-graph"></i>
@@ -132,7 +156,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-lg-6 col-12">
                             <div class="small-box bg-dark">
                                 <div class="inner">
                                     <h4>Setup phần trăm lợi nhuận </h4>
@@ -140,6 +164,22 @@
                                         @csrf
                                         <div class="input-group mb-3">
                                             <input type="number" name="value" value="{{$setpercent->value}}">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-sm btn-danger"><i class="fas fa-arrow-circle-right"></i></button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-12">
+                            <div class="small-box bg-dark">
+                                <div class="inner">
+                                    <h4>Setup phần trăm lợi nhuận sửa chửa </h4>
+                                    <form action="setup/percentsc" method="post">
+                                        @csrf
+                                        <div class="input-group mb-3">
+                                            <input type="number" name="value" value="{{$setpercentsc->value}}">
                                             <div class="input-group-append">
                                                 <button class="btn btn-sm btn-danger"><i class="fas fa-arrow-circle-right"></i></button>
                                             </div>

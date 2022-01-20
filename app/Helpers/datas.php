@@ -10,7 +10,8 @@ function levels() {
 function types() {
     return collect([
         (object) [ "id" => "1", "name" => "Phiếu thu"],
-        (object) [ "id" => "2", "name" => "Phiếu chi"]
+        (object) [ "id" => "2", "name" => "Phiếu chi"],
+        (object) [ "id" => "3", "name" => "Phiếu rút"]
     ]);
 }
 

@@ -27,6 +27,7 @@ class VhnPhieuController extends Controller
             $phieu->date_import = date('Y-m-d',strtotime($request->date_import));
             $phieu->sort = $request->sort;
             $phieu->status = ($request->status == 'on' ? 1 : 0);
+            $phieu->idrut = $request->idrut;
             $phieu->created_at = date("Y-m-d H:i:s");
             $phieu->updated_at = date("Y-m-d H:i:s");
             $phieu->save();
@@ -58,6 +59,7 @@ class VhnPhieuController extends Controller
             $phieu->date_import = date('Y-m-d',strtotime($request->date_import));
             $phieu->sort = $request->sort;
             $phieu->status = ($request->status == 'on' ? 1 : 0);
+            $phieu->idrut = $request->idrut;
             $phieu->updated_at = date("Y-m-d H:i:s");
             $phieu->save();
             $myclass = new VhnImageController;
