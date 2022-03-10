@@ -28,7 +28,7 @@
                                             <th>Địa chỉ</th>
                                             <th>Số điện thoại</th>
                                             <th>Sản phẩm + sp tự nhập</th>
-                                            {{-- <th>Trạng thái</th> --}}
+                                            <th>Công nợ</th>
                                             <th>Tác vụ</th>
                                         </tr>
                                     </thead>
@@ -91,9 +91,9 @@
                     {
                         data: 'tongtien', className: 'text-center', width: '150px'
                     },
-                    // {
-                    //     data: 'status', className: 'text-center', width: '10px'
-                    // },
+                    {
+                        data: 'congno', className: 'text-center', width: '10px'
+                    },
                     {
                         data: 'action' , className: 'text-center', width: '100px'
                     }

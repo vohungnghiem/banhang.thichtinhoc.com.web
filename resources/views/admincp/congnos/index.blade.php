@@ -23,6 +23,7 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Name</th>
+                                            <th>Loại đơn hàng</th>
                                             <th>Tiền công nợ</th>
                                             <th>Ngày đòi nợ gần nhất</th>
                                             <th class="text-center">Công nợ</th>
@@ -32,54 +33,112 @@
                                     </thead>
                                     <tbody>
                                         @foreach($congnos as $key => $item)
-                                        <tr class="wraptr{{$item->id}}">
+                                        <tr class="wraptr{{$item->id}} {{$item->loai == 'suachua' ? '' : 'text-info'}}">
                                             <td></td>
                                             <td>{{$item->name}}</td>
-                                            <td>
-                                                @php
-                                                    $congnosc = 0; $congnosp = 0; $giamgia = 0;
-                                                    if ($item->congno) {
-                                                        foreach (explode(",", $item->congno) as $key => $itemcn) {
-                                                            $congnosc += explode("-", $itemcn)[1];
-                                                        }
-                                                    }
-                                                    if ($item->congnosp) {
-                                                        foreach (explode(",", $item->congnosp) as $key => $itemsp) {
-                                                            if (explode("-", $itemsp)[2] == 'sc') {
-                                                                $congnosp += explode("-", $itemsp)[1];
+                                            @if ($item->loai == 'suachua')
+                                            {{-- sủa chửa --}}
+                                                <td>Sửa chửa</td>
+                                                <td>
+                                                    @php
+                                                        $congnosc = 0; $congnosp = 0; $giamgia = 0;
+                                                        if ($item->congno) {
+                                                            foreach (explode(",", $item->congno) as $key => $itemcn) {
+                                                                $congnosc += explode("-", $itemcn)[1];
                                                             }
                                                         }
-                                                    }
-                                                    if ($item->giamgia) {
-                                                        foreach (explode(",", $item->giamgia) as $key => $itemgg) {
-                                                            $giamgia +=$itemgg;
+                                                        if ($item->congnosp) {
+                                                            foreach (explode(",", $item->congnosp) as $key => $itemsp) {
+                                                                if (explode("-", $itemsp)[2] == 'sc') {
+                                                                    $congnosp += explode("-", $itemsp)[1];
+                                                                }
+                                                            }
                                                         }
-                                                    }
-                                                @endphp
-                                                <strong>{{number_format($congnosc + $congnosp - $giamgia)}}đ</strong> (giảm: {{number_format($giamgia)}}đ)
-                                            </td>
+                                                        if ($item->giamgia) {
+                                                            foreach (explode(",", $item->giamgia) as $key => $itemgg) {
+                                                                $giamgia +=$itemgg;
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    <strong>{{number_format($congnosc + $congnosp - $giamgia)}}đ</strong> (giảm: {{number_format($giamgia)}}đ)
+                                                </td>
+                                                {{-- @if ($item->ngay_congno != null)
+                                                    <td>{{ datevn($item->ngay_congno) }}</td>
+                                                    <td>
+                                                        <div href="congnos/congno/{{$item->id}}" class="btn btn-xs btn-info btn-congno" data-id="{{$item->id}}" data-date="{{$item->ngay_congno}}" data-toggle="tooltip" title="đòi nợ">
+                                                            <i class="fas fa-dollar-sign"></i> đã đòi nợ
+                                                        </div>
+                                                    </td>
+                                                @else
+                                                    <td></td>
+                                                    <td>
+                                                        <div href="congnos/congno/{{$item->id}}" class="btn btn-xs btn-danger btn-congno" data-id="{{$item->id}}" data-date="{{$item->ngay_congno}}" data-toggle="tooltip" title="đòi nợ">
+                                                            <i class="fas fa-dollar-sign"></i> chưa đòi nợ
+                                                        </div>
+                                                    </td>
+                                                @endif --}}
+                                                {{-- <td>
+                                                    @if ($item->ngay_congno != null)
+                                                        <a href="congnos/list/{{$item->id}}/{{$item->ngay_congno}}/{{$item->loai}}?v={{time()}}" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Xem các sản phẩm">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    @else
+                                                        <a href="congnos/list/{{$item->id}}/null" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Xem các sản phẩm">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    @endif
+                                                </td> --}}
+                                            @else
+                                            {{-- bán hàng --}}
+                                                <td>Bán hàng</td>
+                                                <td>
+                                                    @php
+                                                        $congnosc = 0; $congnosp = 0; $giamgia = 0;
+                                                        if ($item->congno) {
+                                                            foreach (explode(",", $item->congno) as $key => $itemcn) {
+                                                                $congnosc += explode("-", $itemcn)[1];
+                                                            }
+                                                        }
+                                                        if ($item->congnosp) {
+                                                            foreach (explode(",", $item->congnosp) as $key => $itemsp) {
+                                                                if (explode("-", $itemsp)[2] == 'pro') {
+                                                                    $congnosp += explode("-", $itemsp)[1];
+                                                                }
+                                                            }
+                                                        }
+                                                        if ($item->giamgia) {
+                                                            foreach (explode(",", $item->giamgia) as $key => $itemgg) {
+                                                                $giamgia +=$itemgg;
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    <strong>{{number_format($congnosc + $congnosp - $giamgia)}}đ</strong> (giảm: {{number_format($giamgia)}}đ)
+                                                </td>
+
+
+                                            @endif
                                             @if ($item->ngay_congno != null)
                                                 <td>{{ datevn($item->ngay_congno) }}</td>
                                                 <td>
-                                                    <div href="congnos/congno/{{$item->id}}" class="btn btn-xs btn-info btn-congno" data-id="{{$item->id}}" data-date="{{$item->ngay_congno}}" data-toggle="tooltip" title="đòi nợ">
+                                                    <div href="congnos/congno/{{$item->id}}" class="btn btn-xs btn-info btn-congno" data-id="{{$item->id}}" data-loai="{{$item->loai}}" data-date="{{$item->ngay_congno}}" data-toggle="tooltip" title="đòi nợ">
                                                         <i class="fas fa-dollar-sign"></i> đã đòi nợ
                                                     </div>
                                                 </td>
                                             @else
                                                 <td></td>
                                                 <td>
-                                                    <div href="congnos/congno/{{$item->id}}" class="btn btn-xs btn-danger btn-congno" data-id="{{$item->id}}" data-date="{{$item->ngay_congno}}" data-toggle="tooltip" title="đòi nợ">
+                                                    <div href="congnos/congno/{{$item->id}}" class="btn btn-xs btn-danger btn-congno" data-id="{{$item->id}}" data-loai="{{$item->loai}}" data-date="{{$item->ngay_congno}}" data-toggle="tooltip" title="đòi nợ">
                                                         <i class="fas fa-dollar-sign"></i> chưa đòi nợ
                                                     </div>
                                                 </td>
                                             @endif
                                             <td>
                                                 @if ($item->ngay_congno != null)
-                                                    <a href="congnos/list/{{$item->id}}/{{$item->ngay_congno}}" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Xem các sản phẩm">
+                                                    <a href="congnos/list/{{$item->id}}/{{$item->ngay_congno}}/{{$item->loai}}" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Xem các sản phẩm">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                 @else
-                                                    <a href="congnos/list/{{$item->id}}/null" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Xem các sản phẩm">
+                                                    <a href="congnos/list/{{$item->id}}/null/{{$item->loai}}" class="btn btn-xs btn-primary" data-toggle="tooltip" title="Xem các sản phẩm">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                 @endif
@@ -125,11 +184,13 @@
                 columnDefs: [
                     {	orderable: false},
                     { "width": "3%", "targets": 0},
-                    { "width": "20%", "targets": 2},
-                    { "width": "5%", "targets": 3},
+                    { "width": "20%", "targets": 1},
+                    { "width": "5%", "targets": 2, "className": "text-center"},
+                    { "width": "20%", "targets": 3},
                     { "width": "5%", "targets": 4, "className": "text-center"},
                     { "width": "5%", "targets": 5, "className": "text-center"},
-                    { "width": "10%", "targets": 6, "className": "text-center"},
+                    { "width": "5%", "targets": 6, "className": "text-center"},
+                    { "width": "5%", "targets": 7, "className": "text-center"},
                 ],
                 "ordering": false,
                 "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {

@@ -13,13 +13,24 @@ class VhnHoadonProController extends Controller
     }
     public function create() {
         $products = DB::table('vhn_products')->where('quantity','>',0)->get();
+        $congnos = DB::table('vhn_congnos')->get();
         $hdgiamgias = DB::table('vhn_giamgias')->get();
-        return view('admincp.hoadonpros.create',compact('products','hdgiamgias'));
+        return view('admincp.hoadonpros.create',compact('products','congnos','hdgiamgias'));
     }
     public function store(Request $request) {
         try {
             $mahoadon = DB::table('vhn_hoadon_pros')->latest()->first();
             $mahoadon = isset($mahoadon->mahoadon) ? $mahoadon->mahoadon + 1  : 1;
+            if ($request->add_congno) {
+                $congno = DB::table('vhn_congnos')
+                ->updateOrInsert(
+                    ['name' => $request->add_congno],
+                    ['status' => 1,'sort' => 1, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')]
+                );
+                $id_congno = DB::getPdo()->lastInsertId();
+            }else{
+                $id_congno = $request->id_congno;
+            }
             $id = DB::table('vhn_hoadon_pros')->insertGetId(
                 [
                     'mahoadon' => $mahoadon,
@@ -27,6 +38,7 @@ class VhnHoadonProController extends Controller
                     'tenkh' => $request->tenkh,
                     'diachi' => $request->diachi,
                     'sdt' => $request->sdt,
+                    'id_congno' => $id_congno,
                     'sort' => $request->sort,
                     'status' => $request->status == 'on' ? 1 : 0,
                     'created_at' => date("Y-m-d H:i:s"),
@@ -90,12 +102,13 @@ class VhnHoadonProController extends Controller
                     END) AS has_dt')
                 )
                 ->get(); // kiểm tra sản phẩm còn hàng
+            $congnos = DB::table('vhn_congnos')->get();
             $hoadonpro = DB::table('vhn_hoadon_pros')->where('id',$id)->first();
             $hdsanphams = DB::table('vhn_hd_sanphams')->where([['id_hd',$id],['id_type','pro']])->get();
 
             $hdtunhaps = DB::table('vhn_hd_tunhaps')->where('id_hd',$id)->get();
             $hdgiamgias = DB::table('vhn_giamgias')->get();
-            return view('admincp.hoadonpros.edit',compact('products','hoadonpro','hdsanphams','hdtunhaps','hdgiamgias'));
+            return view('admincp.hoadonpros.edit',compact('products','congnos','hoadonpro','hdsanphams','hdtunhaps','hdgiamgias'));
         } catch (\Throwable $th) {
             return redirect()->back()->with('error','Error!');
         }
@@ -114,6 +127,16 @@ class VhnHoadonProController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            if ($request->add_congno) {
+                $congno = DB::table('vhn_congnos')
+                ->updateOrInsert(
+                    ['name' => $request->add_congno],
+                    ['status' => 1,'sort' => 1, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')]
+                );
+                $id_congno = DB::getPdo()->lastInsertId();
+            }else{
+                $id_congno = $request->id_congno;
+            }
             DB::table('vhn_hoadon_pros')
                 ->where('id', $id)
                 ->update([
@@ -121,6 +144,7 @@ class VhnHoadonProController extends Controller
                     'tenkh' => $request->tenkh,
                     'diachi' => $request->diachi,
                     'sdt' => $request->sdt,
+                    'id_congno' => $id_congno,
                     'sort' => $request->sort,
                     'status' => $request->status == 'on' ? 1 : 0,
                     'updated_at' => date("Y-m-d H:i:s")

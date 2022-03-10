@@ -217,6 +217,7 @@ class DatatablesController extends Controller
                 'vhn_hoadon_pros.*',
                 DB::raw("GROUP_CONCAT(DISTINCT vhn_hd_sanphams.total,'-',vhn_hd_sanphams.id_type) as totalsp"),
                 DB::raw("SUM( DISTINCT vhn_hd_tunhaps.price) AS totaltn"),
+                DB::raw("GROUP_CONCAT(DISTINCT CASE WHEN (vhn_hoadon_pros.id_congno > 0) AND (vhn_hoadon_pros.ngay_congno IS NULL) THEN vhn_hoadon_pros.tenkh ELSE NULL END , '*' ) as congno"),
             )
             ->groupBy('vhn_hoadon_pros.id')
             ->orderBy('vhn_hoadon_pros.id','desc');
@@ -257,6 +258,19 @@ class DatatablesController extends Controller
                 }
             return $result;
         });
+        $datatables->editColumn('congno', function ($item) {
+            if (isset($item->congno)) {
+                $result = '<div class="badge badge-xs badge-danger" data-toggle="tooltip" title="'.$item->tenkh.'">
+                    <i class="fas fa-comment-dots"></i> còn nợ
+                </div> ';
+            }else{
+                $result = '<div class="badge badge-xs badge-secondary" data-toggle="tooltip" title="'.$item->tenkh.'">
+                    <i class="fas fa-comment-dots"></i> không nợ
+                </div> ';
+            }
+
+            return $result;
+        });
         $datatables->addColumn('action', function ($item) {
             $result = ''; $edit = ''; $delete = ''; $show = '';
             $edit = '<a href="hoadonpros/edit/'.$item->id.'" class="btn btn-xs btn-primary" data-toggle="tooltip" title="'.__('admin.update_info').'">
@@ -270,7 +284,7 @@ class DatatablesController extends Controller
             $result .= $edit . $show . $delete;
             return $result;
         });
-        $datatables->rawColumns(['mahoadon','thoigian','tenkh','tongtien','status','action']);
+        $datatables->rawColumns(['mahoadon','thoigian','tenkh','tongtien','status','congno','action']);
         return $datatables->make();
     }
 

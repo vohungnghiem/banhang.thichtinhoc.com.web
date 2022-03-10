@@ -17,7 +17,7 @@ class HomeController extends Controller
         $quantity = DB::table('vhn_products')->sum('quantity');
 
         $importPrice = DB::table('vhn_products')->sum(DB::raw('quantity * price_import'));
-
+        # Chỉ lợi nhuận sửa chửa
         $tongloinhuan = $this->tongLoiNhuan($year);
         $tongloinhuanbanhang = $this->tongLoiNhuanBanHang($year);
         $phieuthu = DB::table('vhn_phieus')->where('type','=',1)->sum('fee');
@@ -36,6 +36,10 @@ class HomeController extends Controller
             ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_pros.id')
             ->leftJoin('vhn_products','vhn_products.id','=','vhn_hd_sanphams.id_sp')
             ->where('vhn_hd_sanphams.id_type','pro')
+            ->where(function($q) {
+                $q->where([['vhn_hoadon_pros.id_congno','>',0],['vhn_hoadon_pros.ngay_congno','<>',NULL]])
+                ->orWhere('vhn_hoadon_pros.id_congno','<=', 0);
+            })
             ->sum(DB::raw('vhn_hd_sanphams.total - (vhn_hd_sanphams.quantity * vhn_products.price_import)'));
         $loinhuan_bansp = $loinhuan_bansp * (100 - $setpercent->value) / 100;
         $loinhuan_bansc = DB::table('vhn_hoadon_scs')
@@ -62,7 +66,6 @@ class HomeController extends Controller
         return view('admincp.home.dashboard',compact('products','quantity','importPrice','tongloinhuan','tongloinhuanbanhang','vonchitieu','phieuthu','phieuchi','phieurut','phieurutsc','phieurutbh','tkmonth','loinhuanmonth','tkday','loinhuanday','year','month','setpercent','setpercentsc'));
     }
     public function tongLoiNhuan($year) {
-
         $loinhuan_tunhap = DB::table('vhn_hoadon_scs')->whereYear('thoigian',$year)
             ->where('vhn_hoadon_scs.status','>=',4)
             ->where(function($q) {
@@ -70,8 +73,6 @@ class HomeController extends Controller
                 ->orWhere('vhn_hoadon_scs.id_congno','<=', 0);
             })
             ->sum('loinhuan'); // lợi nhuận phần trăm
-            # đang sửa
-
         $tongloinhuan = $loinhuan_tunhap;
         return $tongloinhuan;
     }
@@ -82,12 +83,20 @@ class HomeController extends Controller
             ->join('vhn_products','vhn_products.id','=','vhn_hd_sanphams.id_sp')
             ->whereYear('thoigian',$year)
             ->where('vhn_hd_sanphams.id_type','pro')
+            ->where(function($q) {
+                $q->where([['vhn_hoadon_pros.id_congno','>',0],['vhn_hoadon_pros.ngay_congno','<>',NULL]])
+                ->orWhere('vhn_hoadon_pros.id_congno','<=', 0);
+            })
             ->sum(DB::raw('vhn_hd_sanphams.total  - (vhn_hd_sanphams.quantity * vhn_products.price_import )'));
         $giamgia_bansp = DB::table('vhn_hoadon_pros')
             ->join('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_pros.id')
             ->join('vhn_giamgias','vhn_giamgias.code','=','vhn_hd_sanphams.giamgia')
             ->whereYear('thoigian',$year)
             ->where('vhn_hd_sanphams.id_type','pro')
+            ->where(function($q) {
+                $q->where([['vhn_hoadon_pros.id_congno','>',0],['vhn_hoadon_pros.ngay_congno','<>',NULL]])
+                ->orWhere('vhn_hoadon_pros.id_congno','<=', 0);
+            })
             ->sum(DB::raw('vhn_giamgias.giamgia'));
         $loinhuan_bansp = $loinhuan_bansp *  $setpercent->value / 100 - $giamgia_bansp;
         $loinhuan_bansc = DB::table('vhn_hoadon_scs')
@@ -126,6 +135,10 @@ class HomeController extends Controller
                 ->whereYear('thoigian',$year)
                 ->whereMonth('thoigian',$i)
                 ->where('vhn_hd_sanphams.id_type','pro')
+                ->where(function($q) {
+                    $q->where([['vhn_hoadon_pros.id_congno','>',0],['vhn_hoadon_pros.ngay_congno','<>',NULL]])
+                    ->orWhere('vhn_hoadon_pros.id_congno','<=', 0);
+                })
                 ->sum(DB::raw('vhn_hd_sanphams.total'));
             $ban_sc = DB::table('vhn_hoadon_scs')
                 ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_scs.id')
@@ -163,6 +176,10 @@ class HomeController extends Controller
                 ->whereYear('thoigian',$year)
                 ->whereMonth('thoigian',$i)
                 ->where('vhn_hd_sanphams.id_type','pro')
+                ->where(function($q) {
+                    $q->where([['vhn_hoadon_pros.id_congno','>',0],['vhn_hoadon_pros.ngay_congno','<>',NULL]])
+                    ->orWhere('vhn_hoadon_pros.id_congno','<=', 0);
+                })
                 ->sum(DB::raw('vhn_hd_sanphams.total  - (vhn_hd_sanphams.quantity * vhn_products.price_import )'));
             $giamgia_pro = DB::table('vhn_hoadon_pros')
                 ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_pros.id')
@@ -170,6 +187,10 @@ class HomeController extends Controller
                 ->whereYear('thoigian',$year)
                 ->whereMonth('thoigian',$i)
                 ->where('vhn_hd_sanphams.id_type','pro')
+                ->where(function($q) {
+                    $q->where([['vhn_hoadon_pros.id_congno','>',0],['vhn_hoadon_pros.ngay_congno','<>',NULL]])
+                    ->orWhere('vhn_hoadon_pros.id_congno','<=', 0);
+                })
                 ->sum(DB::raw('vhn_giamgias.giamgia'));
             $ban_pro = $ban_pro *  $setpercent->value / 100 - $giamgia_pro;
 

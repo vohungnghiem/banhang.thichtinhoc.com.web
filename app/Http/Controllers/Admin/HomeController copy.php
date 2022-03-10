@@ -11,6 +11,7 @@ class HomeController extends Controller
         $year = isset($_GET['datey']) ? $_GET['datey'] : date('Y');
         $month = isset($_GET['datem']) ? $_GET['datem'] : date('m');
         $setpercent = DB::table('vhn_setups')->where('name','percent')->first();
+        $setpercentsc = DB::table('vhn_setups')->where('name','percentsc')->first();
 
         $products = DB::table('vhn_products')->count();
         $quantity = DB::table('vhn_products')->sum('quantity');
@@ -21,6 +22,9 @@ class HomeController extends Controller
         $tongloinhuanbanhang = $this->tongLoiNhuanBanHang($year);
         $phieuthu = DB::table('vhn_phieus')->where('type','=',1)->sum('fee');
         $phieuchi = DB::table('vhn_phieus')->where('type','=',2)->sum('fee');
+        $phieurut = DB::table('vhn_phieus')->where('type','=',3)->whereYear('date_import',$year)->sum('fee');
+        $phieurutsc = DB::table('vhn_phieus')->where([['type','=',3],['idrut',1]])->whereYear('date_import',$year)->sum('fee');
+        $phieurutbh = DB::table('vhn_phieus')->where([['type','=',3],['idrut',2]])->whereYear('date_import',$year)->sum('fee');
         $hoivon = DB::table('vhn_hoadon_scs')
             ->where('vhn_hoadon_scs.status','>=',4)
             ->where(function($q) {
@@ -31,8 +35,6 @@ class HomeController extends Controller
         $loinhuan_bansp = DB::table('vhn_hoadon_pros')
             ->leftJoin('vhn_hd_sanphams','vhn_hd_sanphams.id_hd','=','vhn_hoadon_pros.id')
             ->leftJoin('vhn_products','vhn_products.id','=','vhn_hd_sanphams.id_sp')
-            // ->leftJoin('vhn_giamgias','vhn_giamgias.code','=','vhn_hd_sanphams.giamgia')
-            // ->whereYear('thoigian',$year)
             ->where('vhn_hd_sanphams.id_type','pro')
             ->sum(DB::raw('vhn_hd_sanphams.total - (vhn_hd_sanphams.quantity * vhn_products.price_import)'));
         $loinhuan_bansp = $loinhuan_bansp * (100 - $setpercent->value) / 100;
@@ -57,7 +59,7 @@ class HomeController extends Controller
         $loinhuanmonth = $this->chartLoinhuanMonth($year);
         $tkday = $this->chartDay($year,$month);
         $loinhuanday = $this->chartLoinhuanDay($year,$month);
-        return view('admincp.home.dashboard',compact('products','quantity','importPrice','tongloinhuan','tongloinhuanbanhang','vonchitieu','phieuthu','tkmonth','loinhuanmonth','tkday','loinhuanday','year','month','setpercent'));
+        return view('admincp.home.dashboard',compact('products','quantity','importPrice','tongloinhuan','tongloinhuanbanhang','vonchitieu','phieuthu','phieuchi','phieurut','phieurutsc','phieurutbh','tkmonth','loinhuanmonth','tkday','loinhuanday','year','month','setpercent','setpercentsc'));
     }
     public function tongLoiNhuan($year) {
 

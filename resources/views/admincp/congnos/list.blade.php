@@ -12,8 +12,10 @@
                     <div class="col-12">
                         <div class="card card-primary card-outline">
                             <div class="card-header ">
-                                <h3 class="card-title font-weight-bold {{$date ? 'text-info' : 'text-danger'}}">{{$congno->name}} {{$date ? '(đã thanh toán)' : '(yêu cầu thanh toán)'}}</h3>
+                                <h3 class="card-title font-weight-bold {{$date ? 'text-info' : 'text-danger'}}">{{$congno->name}} {{$date ? '(đã thanh toán)' : '(yêu cầu thanh toán)'}} </h3>
+
                                 <div class="card-tools">
+                                    <b class="text-warning">{{$loai == 'suachua' ? 'Đơn hàng sửa chửa' : 'Đơn hàng bán sản phẩm' }}</b>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -34,26 +36,43 @@
                                                 @foreach (explode(",", $item->congno) as $key => $itemsc)
                                                     <tr>
                                                         <td>{{++$key}}</td>
-                                                        <td>{{explode("-", $itemsc)[0]}}</td>
-                                                        <td class="font-weight-bold">{{number_format(explode("-", $itemsc)[1])}}đ</td>
+                                                        <td>{{explode("@@", $itemsc)[0]}}</td>
+                                                        <td class="font-weight-bold">{{number_format(explode("@@", $itemsc)[1])}}đ</td>
                                                     </tr>
                                                 @endforeach
                                             @endif
                                             @if ($item->congnosp)
-                                                @foreach (explode(",", $item->congnosp) as $key => $itemsp)
-                                                    @if (explode("-", $itemsp)[2] == 'sc')
-                                                        <tr>
-                                                            <td>{{++$key}}</td>
-                                                            <td>(++) {{explode("-", $itemsp)[3]}}</td>
-                                                            <td >
-                                                                <div class="font-weight-bold">{{number_format(explode("-", $itemsp)[1] - $item->giamgia) }}đ</div>
-                                                                @if ($item->giamgia == 0)
-                                                                    (Giảm giá: {{number_format($item->giamgia)}}đ)
-                                                                @endif
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-                                                @endforeach
+                                                @if ($item->loai == 'suachua')
+                                                    @foreach (explode(",", $item->congnosp) as $key => $itemsp)
+                                                        @if (explode("-", $itemsp)[2] == 'sc')
+                                                            <tr>
+                                                                <td>{{++$key}}</td>
+                                                                <td>(++) {{explode("-", $itemsp)[3]}}</td>
+                                                                <td >
+                                                                    <div class="font-weight-bold">{{number_format(explode("-", $itemsp)[1] - $item->giamgia) }}đ</div>
+                                                                    @if ($item->giamgia == 0)
+                                                                        (Giảm giá: {{number_format($item->giamgia)}}đ)
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                        @endif
+                                                    @endforeach
+                                                @else
+                                                    @foreach (explode(",", $item->congnosp) as $key => $itemsp)
+                                                        @if (explode("-", $itemsp)[2] == 'pro')
+                                                            <tr>
+                                                                <td>{{++$key}}</td>
+                                                                <td>(++) {{explode("-", $itemsp)[3]}}</td>
+                                                                <td >
+                                                                    <div class="font-weight-bold">{{number_format(explode("-", $itemsp)[1] - $item->giamgia) }}đ</div>
+                                                                    @if ($item->giamgia == 0)
+                                                                        (Giảm giá: {{number_format($item->giamgia)}}đ)
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
                                             @endif
                                         @endforeach
                                         <tr>
@@ -66,13 +85,21 @@
                                                         $congnosc = 0; $congnosp = 0; $giamgia = 0;
                                                         if ($item->congno) {
                                                             foreach (explode(",", $item->congno) as $key => $itemcn) {
-                                                                $congnosc += explode("-", $itemcn)[1];
+                                                                $congnosc += explode("@@", $itemcn)[1];
                                                             }
                                                         }
-                                                        if ($item->congnosp) {
-                                                            foreach (explode(",", $item->congnosp) as $key => $itemsp) {
-                                                                if (explode("-", $itemsp)[2] == 'sc') {
-                                                                    $congnosp += explode("-", $itemsp)[1];
+                                                        if ($item->congnosp ) {
+                                                            if ($item->loai == "suachua") {
+                                                                foreach (explode(",", $item->congnosp) as $key => $itemsp) {
+                                                                    if (explode("-", $itemsp)[2] == 'sc') {
+                                                                        $congnosp += explode("-", $itemsp)[1];
+                                                                    }
+                                                                }
+                                                            }else{
+                                                                foreach (explode(",", $item->congnosp) as $key => $itemsp) {
+                                                                    if (explode("-", $itemsp)[2] == 'pro') {
+                                                                        $congnosp += explode("-", $itemsp)[1];
+                                                                    }
                                                                 }
                                                             }
                                                         }

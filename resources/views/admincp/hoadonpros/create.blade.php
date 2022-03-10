@@ -42,6 +42,20 @@
                                                 <label> Số địa chỉ </label>
                                                 <textarea name="diachi" rows="1" class="form-control" placeholder="Nhập địa chỉ">{{old('diachi')}}</textarea>
                                             </div>
+                                            <div class="form-group col-lg-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend"> <span class="input-group-text">Công nợ (Chọn)</span> </div>
+                                                    <select name="id_congno" id="id_congno" class="form-control select2bs4">
+                                                        <option value="0">Khách lẻ (không công nợ)</option>
+                                                        @foreach ($congnos as $item)
+                                                            <option value="{{$item->id}}"> {{$item->name}} </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <button type="button" id="but_congno" class="btn btn-outline-primary"> Thêm  </button> <span id="congno"></span>
+                                            </div>
                                         </div>
                                         <div class="row">
                                             <div class="form-group col-lg-12">
@@ -144,6 +158,30 @@
     </style>
 @endpush
 @push('scripts')
+    <script>
+        var typed = "";
+        $('#id_congno').select2({
+            language: {
+                noResults: function(term) {
+                    typed = $('.select2-search__field').val();
+                }
+            }
+        });
+        $('#id_congno').on('select2:select', function (e) {
+            typed = ""; // clear
+        });
+        $("#but_congno").on("click", function() {
+            $('#congno').empty().append('<input type="hidden" name="add_congno" value="'+typed+'"> <b>'+typed+'</b>');
+            if (typed) {
+                if ($('#id_congno').find("option[value='" + typed + "']").length) {
+                    $('#id_congno').val(typed).trigger('change');
+                } else {
+                var newOption = new Option(typed, typed, true, true);
+                    $('#id_congno').append(newOption).trigger('change');
+                }
+            }
+        });
+    </script>
     <script src="admin_template/plugins/inputmask/jquery.inputmask.js"></script>
     <script>
         $('.datemask').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' });

@@ -78,7 +78,7 @@ Route::group(['middleware' => 'auth','namespace' => 'App\Http\Controllers\Admin'
         Route::post('remove_img','VhnCongnoController@remove_img');
         Route::post('destroy', 'VhnCongnoController@destroy');
         Route::post('congno', 'VhnCongnoController@congno');
-        Route::get('list/{id}/{date}','VhnCongnoController@list');
+        Route::get('list/{id}/{date}/{loai}','VhnCongnoController@list');
     });
 
     Route::group(['prefix' => 'giamgias'],function(){
@@ -159,4 +159,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
 Route::group(['prefix' => 'hoadonscs','namespace' => 'App\Http\Controllers\Admin'],function(){
     Route::get('showkh/{id}','VhnHoadonScController@showkh');
+});
+
+Route::get('/clear-cache', function() {
+    Artisan::call('cache:clear');
+    return "Cache is cleared";
 });
