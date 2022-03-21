@@ -17,6 +17,19 @@ class HomeController extends Controller
         $quantity = DB::table('vhn_products')->sum('quantity');
 
         $importPrice = DB::table('vhn_products')->sum(DB::raw('quantity * price_import'));
+        $productsp = DB::table('vhn_hd_sanphams')
+            ->leftJoin('vhn_hoadon_pros','vhn_hd_sanphams.id_hd','=','vhn_hoadon_pros.id')
+            ->leftJoin('vhn_products','vhn_hd_sanphams.id_sp','=','vhn_products.id')
+            ->where('vhn_hd_sanphams.id_type','pro')
+            ->where([['vhn_hoadon_pros.id_congno','>',0],['vhn_hoadon_pros.ngay_congno','=',NULL]])
+            ->sum(DB::raw('vhn_products.price_import * vhn_hd_sanphams.quantity'));
+        $productsc = DB::table('vhn_hd_sanphams')
+            ->leftJoin('vhn_hoadon_scs','vhn_hd_sanphams.id_hd','=','vhn_hoadon_scs.id')
+            ->leftJoin('vhn_products','vhn_hd_sanphams.id_sp','=','vhn_products.id')
+            ->where('vhn_hd_sanphams.id_type','sc')
+            ->where([['vhn_hoadon_scs.id_congno','>',0],['vhn_hoadon_scs.ngay_congno','=',NULL]])
+            ->sum(DB::raw('vhn_products.price_import * vhn_hd_sanphams.quantity'));
+        // dd($productsc);
         # Chỉ lợi nhuận sửa chửa
         $tongloinhuan = $this->tongLoiNhuan($year);
         $tongloinhuanbanhang = $this->tongLoiNhuanBanHang($year);
@@ -55,7 +68,7 @@ class HomeController extends Controller
             })
             ->sum(DB::raw('vhn_hd_sanphams.total - (vhn_hd_sanphams.quantity * vhn_products.price_import)'));
         $loinhuan_bansc = $loinhuan_bansc * (100 - $setpercent->value) / 100;
-        $vonchitieu = $phieuthu - $importPrice - $phieuchi + $hoivon + $loinhuan_bansp + $loinhuan_bansc;
+        $vonchitieu = $phieuthu - $importPrice - $productsp - $productsc - $phieuchi + $hoivon + $loinhuan_bansp + $loinhuan_bansc;
 
         # test
         // $vonchitieu = $loinhuan_bansp;
