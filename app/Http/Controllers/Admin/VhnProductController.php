@@ -26,7 +26,7 @@ class VhnProductController extends Controller
             $product->name = $request->name;
             $product->quantity = $request->quantity;
             $product->price_sale = $request->price_sale ? str_replace([' ',',','_'], '', $request->price_sale) : 0;
-            $product->price_import = $request->price_sale ? str_replace([' ',',','_'], '', $request->price_import) : 0;
+            $product->price_import = $request->price_import ? str_replace([' ',',','_'], '', $request->price_import) : 0;
             $product->date_import = date('Y-m-d',strtotime($request->date_import));
             $product->id_supplier = $request->id_supplier;
             $product->warranty = $request->warranty;
@@ -67,7 +67,7 @@ class VhnProductController extends Controller
             }
             $product->quantity = $request->quantity;
             $product->price_sale = $request->price_sale ? str_replace([' ',',','_'], '', $request->price_sale) : 0;
-            $product->price_import = $request->price_sale ? str_replace([' ',',','_'], '', $request->price_import) : 0;
+            $product->price_import = $request->price_import ? str_replace([' ',',','_'], '', $request->price_import) : 0;
             $product->date_import = date('Y-m-d',strtotime($request->date_import));
             $product->id_supplier = $request->id_supplier;
             $product->warranty = $request->warranty;

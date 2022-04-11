@@ -81,7 +81,7 @@
                                                 <div class="form-group col-lg-3">
                                                     <div class="input-group">
                                                         <div class="input-group-prepend"> <span class="input-group-text">Giá bán</span> </div>
-                                                        <input type="text" name="hd_sanpham[{{$i}}][gianhap]" value="000" class="form-control number" >
+                                                        <input type="text" name="hd_sanpham[{{$i}}][gianhap]" value="" class="form-control number" >
                                                     </div>
                                                 </div>
                                                 <div class="form-group col-lg-2">
@@ -207,7 +207,7 @@
                 '<div class="form-group col-lg-3">'+
                     '<div class="input-group">'+
                         '<div class="input-group-prepend"> <span class="input-group-text">Giá bán</span> </div>'+
-                        '<input type="text" name="hd_sanpham['+count+'][gianhap]" value="000" class="form-control number" >'+
+                        '<input type="text" name="hd_sanpham['+count+'][gianhap]" value="" class="form-control number" >'+
                     '</div>'+
                 '</div>'+
                 '<div class="form-group col-lg-2">'+
