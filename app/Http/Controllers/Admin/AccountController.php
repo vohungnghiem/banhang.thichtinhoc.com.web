@@ -145,6 +145,5 @@ class AccountController extends Controller
         } catch (\Throwable $th) {
             return response()->json('error');
         }
-
     }
 }

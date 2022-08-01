@@ -24,7 +24,7 @@
                                 <div class="row mr-0">
                                     <div class="card-body col-lg-2 text-center">
                                         <h4> {{__('admin.avatar')}}</h4>
-                                        <div class="cropme" style="width: 150px; height: 150px;"></div>
+                                        <div class="cropme" style="width: 100px; height: 150px;"></div>
                                         <input type="hidden" id="input" name="avatar" />
                                         <div id="remove_img" class="btn btn-xs btn-danger" data-toggle="tooltip" title="{{__('admin.remove_img')}}">
                                             <i class="far fa-trash-alt"></i>
